@@ -11,25 +11,9 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <Style x:Key="{x:Type TextBlock}" TargetType="TextBlock">
-                <Setter Property="Margin" Value="8" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
-            <Style x:Key="TitleTextBlockStyle" TargetType="TextBlock"
-                   BasedOn="{StaticResource {x:Type TextBlock}}">
-                <Setter Property="FontWeight" Value="Bold" />
-            </Style>
-            <Style x:Key="ResultValueTextBlockStyle" TargetType="TextBlock"
-                   BasedOn="{StaticResource {x:Type TextBlock}}">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-            </Style>
-            <Style x:Name="TextBoxStyle" TargetType="TextBox">
-                <Setter Property="Margin" Value="8,0,8,8" />
-            </Style>
-            <Style x:Name="DefaultListBoxStyle" TargetType="ListBox">
-                <Setter Property="Margin" Value="8,0,8,8" />
-                <Setter Property="Focusable" Value="False" />
-            </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResourceDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -56,7 +40,7 @@
                 <TextBlock Text="Erstellen" Margin="8,0" TextWrapping="Wrap" />
             </Button>
             <ListBox Grid.Row="1" Grid.ColumnSpan="2"
-                     ItemsSource="{Binding WordList, Mode=OneWay}" />
+                     ItemsSource="{Binding WordList, Mode=OneWay, FallbackValue=ABC}" />
         </Grid>
 
         <Grid Grid.Column="1" IsEnabled="{Binding IsWordListFilled, Mode=OneWay}">
