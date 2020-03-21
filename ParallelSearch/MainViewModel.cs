@@ -102,7 +102,7 @@
         private void CreateListCallback()
         {
             WordList.Clear();
-            listCreator.CreateWordList().ForEach(x => WordList.Add(x));
+            listCreator.CreateWordList(4).ForEach(x => WordList.Add(x));
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsWordListFilled));
         }
