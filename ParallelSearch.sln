@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSearch", "ParallelSearch\ParallelSearch.csproj", "{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelSearch", "ParallelSearch\ParallelSearch.csproj", "{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSearchLibrary", "ParallelSearchLibrary\ParallelSearchLibrary.csproj", "{883E811B-241C-44E6-BC78-597F239BB038}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3E10EBC6-528A-4013-BCF9-73E04164ACCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,10 @@ Global
 		{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883E811B-241C-44E6-BC78-597F239BB038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883E811B-241C-44E6-BC78-597F239BB038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883E811B-241C-44E6-BC78-597F239BB038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883E811B-241C-44E6-BC78-597F239BB038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
