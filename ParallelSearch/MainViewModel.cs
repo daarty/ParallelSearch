@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
-using ParallelSearch.Mvvm;
-using ParallelSearch.Utils;
-
-namespace ParallelSearch
+﻿namespace ParallelSearch
 {
+    using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Windows.Input;
+    using ParallelSearch.Mvvm;
+    using ParallelSearch.Utils;
+
     /// <summary>
     /// ViewModel class for the MainWindow.
     /// </summary>

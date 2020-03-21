@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using ParallelSearch.Utils;
-
-namespace ParallelSearch
+﻿namespace ParallelSearch
 {
+    using System.Windows;
+    using ParallelSearch.Utils;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

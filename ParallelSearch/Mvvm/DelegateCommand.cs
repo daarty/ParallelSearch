@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Input;
-
-namespace ParallelSearch.Mvvm
+﻿namespace ParallelSearch.Mvvm
 {
+    using System;
+    using System.Windows.Input;
+
     /// <summary>
     /// Implementation of the <see cref="ICommand"/> interface.
     /// </summary>

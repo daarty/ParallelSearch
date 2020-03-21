@@ -1,7 +1,7 @@
-﻿using System.Windows;
-
-namespace ParallelSearch
+﻿namespace ParallelSearch
 {
+    using System.Windows;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

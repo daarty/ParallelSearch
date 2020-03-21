@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace ParallelSearch.Utils
+﻿namespace ParallelSearch.Utils
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Interface with methods that help creating a word list.
     /// </summary>

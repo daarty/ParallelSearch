@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace ParallelSearch.Utils
+﻿namespace ParallelSearch.Utils
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Implementation of the <see cref="IListCreator"/> interface.
     /// </summary>
