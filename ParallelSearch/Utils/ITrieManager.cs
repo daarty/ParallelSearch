@@ -5,10 +5,8 @@ namespace ParallelSearch.Utils
 {
     public interface ITrieManager
     {
-        ITrie<string> CreateBasicTrie(List<string> wordsList);
+        ITrie<string> CreateBasicTrie(List<string> wordList);
 
         List<string> Search(ITrie<string> trie, string searchWord);
-
-        List<string> SearchWithBasicTrie(List<string> wordsList, string searchWord);
     }
 }

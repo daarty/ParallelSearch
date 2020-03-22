@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Text;
     using log4net;
@@ -18,30 +17,30 @@
         /// </inheritdoc>
         public List<string> CreateWordList(int wordLength)
         {
-            var wordsList = new List<string>();
+            var wordList = new List<string>();
 
             Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            var timer = new PreciseTimer();
+            timer.Start();
 
-            CreateWordListRecursive(wordLength, new List<string>(), wordsList);
+            CreateWordListRecursive(wordLength, new List<string>(), wordList);
 
-            stopWatch.Stop();
-            Logger.Debug($"Successfully created Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
+            var timeSpan = timer.Stop();
+            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpan.MillisecondsWithFractions}' ms.");
 
             var random = new Random();
-            Logger.Debug($"Permutating Word List with '{wordsList.Count}' elements...");
-            stopWatch.Restart();
+            Logger.Debug($"Permutating Word List with '{wordList.Count}' elements...");
+            timer.Start();
 
-            wordsList = wordsList.OrderBy(x => random.Next()).ToList();
+            wordList = wordList.OrderBy(x => random.Next()).ToList();
 
-            stopWatch.Stop();
-            Logger.Debug($"Successfully permutated Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
+            timeSpan = timer.Stop();
+            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpan.MillisecondsWithFractions}' ms.");
 
-            return wordsList;
+            return wordList;
         }
 
-        private void CreateWordListRecursive(int maxWordLength, List<string> currentWord, List<string> wordsList)
+        private void CreateWordListRecursive(int maxWordLength, List<string> currentWord, List<string> wordList)
         {
             foreach (var character in Characters)
             {
@@ -55,11 +54,11 @@
                         stringBuilder.Append(letter);
                     }
 
-                    wordsList.Add(stringBuilder.ToString());
+                    wordList.Add(stringBuilder.ToString());
                 }
                 else
                 {
-                    CreateWordListRecursive(maxWordLength, currentWord, wordsList);
+                    CreateWordListRecursive(maxWordLength, currentWord, wordList);
                 }
 
                 currentWord.RemoveAt(currentWord.Count - 1);

@@ -55,7 +55,7 @@
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
         /// </summary>
-        public bool IsWordListFilled => WordList.Any();
+        public bool IsTrieReady => WordList.Any() && this.Trie != null;
 
         /// <summary>
         /// Gets the number of the search processes.
@@ -107,18 +107,21 @@
 
         private async void CreateListCallback()
         {
-            WordList.Clear();
+            this.WordList.Clear();
+            this.Trie = null;
             OnPropertyChanged(nameof(WordList));
-            OnPropertyChanged(nameof(IsWordListFilled));
+            OnPropertyChanged(nameof(IsTrieReady));
 
             var list = new List<string>();
             await Task.Run(() => list = this.ListCreator.CreateWordList(4));
 
-            list.ForEach(x => WordList.Add(x));
+            list.ForEach(x => this.WordList.Add(x));
             OnPropertyChanged(nameof(WordList));
-            OnPropertyChanged(nameof(IsWordListFilled));
+            OnPropertyChanged(nameof(IsTrieReady));
 
             await Task.Run(() => this.Trie = this.TrieManager.CreateBasicTrie(this.WordList.ToList()));
+
+            OnPropertyChanged(nameof(IsTrieReady));
         }
 
         private async void StartSearch()

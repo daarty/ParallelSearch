@@ -43,7 +43,7 @@
                      ItemsSource="{Binding WordList, Mode=OneWay, FallbackValue=ABC}" />
         </Grid>
 
-        <Grid Grid.Column="1" IsEnabled="{Binding IsWordListFilled, Mode=OneWay}">
+        <Grid Grid.Column="1" IsEnabled="{Binding IsTrieReady, Mode=OneWay}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="3*" />
