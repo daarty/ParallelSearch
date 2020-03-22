@@ -9,7 +9,9 @@
     using System.Windows.Input;
     using Gma.DataStructures.StringSearch;
     using ParallelSearch.Mvvm;
+    using ParallelSearchLibrary;
     using ParallelSearchLibrary.List;
+    using ParallelSearchLibrary.Timer;
     using ParallelSearchLibrary.Trie;
 
     /// <summary>
@@ -19,7 +21,7 @@
     {
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
-
+        private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
         private TrieAlgorithm trieAlgorithm = TrieAlgorithm.Basic;
 
         /// <summary>
@@ -47,12 +49,12 @@
         /// <summary>
         /// Gets the average duration of a search.
         /// </summary>
-        public string DurationAverage { get; private set; }
+        public string DurationAverage => PreciseTimeSpan.Average(searchTimes).ToString();
 
         /// <summary>
         /// Gets the duration of the last search.
         /// </summary>
-        public string DurationLastSearch { get; private set; }
+        public string DurationLastSearch => searchTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
@@ -83,7 +85,7 @@
         /// <summary>
         /// Gets the number of the search processes.
         /// </summary>
-        public string NumberOfSearches { get; private set; }
+        public string NumberOfSearches => searchTimes.Count.ToString();
 
         /// <summary>
         /// Gets the current word list.
@@ -181,16 +183,26 @@
             OnPropertyChanged(nameof(IsTrieReady));
         }
 
+        private void RefreshStatistics()
+        {
+            OnPropertyChanged(nameof(DurationLastSearch));
+            OnPropertyChanged(nameof(DurationAverage));
+            OnPropertyChanged(nameof(NumberOfSearches));
+        }
+
         private async void StartSearch()
         {
             Results.Clear();
             OnPropertyChanged(nameof(Results));
 
-            var results = new List<string>();
-            await Task.Run(() => results = TrieManager.Search(this.Trie, this.SearchString));
+            ParallelSearchResult result =
+            await Task.Run(() => result = TrieManager.Search(this.Trie, this.SearchString));
 
-            results.ToList().ForEach(x => Results.Add(x));
+            result.Result.ForEach(x => Results.Add(x));
             OnPropertyChanged(nameof(Results));
+
+            searchTimes.Add(result.SearchTime);
+            this.RefreshStatistics();
         }
     }
 }

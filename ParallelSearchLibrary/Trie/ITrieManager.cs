@@ -7,6 +7,6 @@
     {
         ITrie<string> CreateTrie(TrieAlgorithm algorithm, List<string> wordList);
 
-        List<string> Search(ITrie<string> trie, string searchWord);
+        ParallelSearchResult Search(ITrie<string> trie, string searchWord);
     }
 }

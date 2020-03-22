@@ -24,17 +24,8 @@
             }
 
             After = DateTime.Now;
-            var timeSpan = After.Subtract(Before);
-            var microseconds = Convert.ToInt32(Math.Round(timeSpan.TotalSeconds * 1000000d)) % 1000;
 
-            return new PreciseTimeSpan
-            {
-                Hours = timeSpan.Hours,
-                Minutes = timeSpan.Minutes,
-                Seconds = timeSpan.Seconds,
-                Milliseconds = timeSpan.Milliseconds,
-                Microseconds = microseconds
-            };
+            return new PreciseTimeSpan(After.Subtract(Before));
         }
     }
 }

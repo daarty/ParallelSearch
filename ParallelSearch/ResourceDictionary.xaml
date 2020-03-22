@@ -9,22 +9,23 @@
     <Style x:Key="TitleTextBlockStyle" TargetType="TextBlock"
                    BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style x:Key="ResultValueTextBlockStyle" TargetType="TextBlock"
                    BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="HorizontalAlignment" Value="Right" />
     </Style>
-    <Style x:Name="TextBoxStyle" TargetType="TextBox">
+    <Style x:Name="{x:Type TextBox}" TargetType="TextBox">
         <Setter Property="Margin" Value="8,0,8,8" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Name="ComboBoxStyle" TargetType="ComboBox">
+    <Style x:Name="{x:Type ComboBox}" TargetType="ComboBox">
         <Setter Property="Margin" Value="8,0,8,8" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <Style x:Name="DefaultListBoxStyle" TargetType="ListBox">
+    <Style x:Name="{x:Type ListBox}" TargetType="ListBox">
         <Setter Property="Margin" Value="8,0,8,8" />
     </Style>
     <DataTemplate x:Key="UnselectableListBoxItemTemplate">

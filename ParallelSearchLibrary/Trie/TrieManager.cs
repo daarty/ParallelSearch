@@ -52,7 +52,7 @@
             return trie;
         }
 
-        public List<string> Search(ITrie<string> trie, string searchWord)
+        public ParallelSearchResult Search(ITrie<string> trie, string searchWord)
         {
             var timer = new PreciseTimer();
             timer.Start();
@@ -62,7 +62,7 @@
             var timeSpan = timer.Stop();
             Logger.Debug($"Successfully found Trie with '{results.Count()}' results in '{timeSpan}'.");
 
-            return results.ToList();
+            return new ParallelSearchResult { Result = results.ToList(), SearchTime = timeSpan };
         }
     }
 }
