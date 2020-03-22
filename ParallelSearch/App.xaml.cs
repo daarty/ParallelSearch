@@ -5,7 +5,8 @@
     using System.Windows;
     using log4net;
     using log4net.Config;
-    using ParallelSearch.Utils;
+    using ParallelSearchLibrary.List;
+    using ParallelSearchLibrary.Trie;
 
     /// <summary>
     /// Interaction logic for App.xaml

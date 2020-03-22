@@ -1,10 +1,11 @@
-﻿namespace ParallelSearch.Utils
+﻿namespace ParallelSearchLibrary.List
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using log4net;
+    using Timer;
 
     /// <summary>
     /// Implementation of the <see cref="IListCreator"/> interface.
@@ -31,7 +32,7 @@
             CreateWordListRecursive(wordLength, new List<string>(), wordList);
 
             var timeSpan = timer.Stop();
-            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpan.MillisecondsWithFractions}' ms.");
+            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpan}'.");
 
             var random = new Random();
             Logger.Debug($"Permutating Word List with '{wordList.Count}' elements...");
@@ -40,7 +41,7 @@
             wordList = wordList.OrderBy(x => random.Next()).ToList();
 
             timeSpan = timer.Stop();
-            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpan.MillisecondsWithFractions}' ms.");
+            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpan}'.");
 
             return wordList;
         }

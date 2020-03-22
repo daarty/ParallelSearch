@@ -1,11 +1,11 @@
-﻿using System;
-using log4net;
-
-namespace ParallelSearch.Utils
+﻿namespace ParallelSearchLibrary.Timer
 {
+    using System;
+    using log4net;
+
     public class PreciseTimer
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(PreciseTimer));
 
         private DateTime After { get; set; }
         private DateTime Before { get; set; }

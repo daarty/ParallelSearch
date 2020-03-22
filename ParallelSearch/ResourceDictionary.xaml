@@ -16,7 +16,14 @@
     </Style>
     <Style x:Name="TextBoxStyle" TargetType="TextBox">
         <Setter Property="Margin" Value="8,0,8,8" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
     </Style>
+
+    <Style x:Name="ComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="Margin" Value="8,0,8,8" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
     <Style x:Name="DefaultListBoxStyle" TargetType="ListBox">
         <Setter Property="Margin" Value="8,0,8,8" />
     </Style>

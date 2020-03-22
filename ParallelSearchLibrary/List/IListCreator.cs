@@ -1,4 +1,4 @@
-﻿namespace ParallelSearch.Utils
+﻿namespace ParallelSearchLibrary.List
 {
     using System.Collections.Generic;
 
@@ -11,7 +11,7 @@
         /// Creates a new list with permutated words with the defined word length.
         /// </summary>
         /// <param name="wordLength">Number of characters in the words.</param>
-        /// <returns>The list of <see cref="string"/>s.</returns>
+        /// <returns>The list of <see cref="string"/> s.</returns>
         List<string> CreateWordList(int wordLength);
     }
 }

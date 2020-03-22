@@ -9,7 +9,8 @@
     using System.Windows.Input;
     using Gma.DataStructures.StringSearch;
     using ParallelSearch.Mvvm;
-    using ParallelSearch.Utils;
+    using ParallelSearchLibrary.List;
+    using ParallelSearchLibrary.Trie;
 
     /// <summary>
     /// ViewModel class for the MainWindow.
@@ -18,6 +19,8 @@
     {
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
+
+        private TrieAlgorithm trieAlgorithm = TrieAlgorithm.Basic;
 
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
@@ -111,6 +114,29 @@
         }
 
         /// <summary>
+        /// Gets or sets the Trie algorithm to use.
+        /// </summary>
+        public TrieAlgorithm TrieAlgorithm
+        {
+            get => trieAlgorithm;
+            set
+            {
+                if (trieAlgorithm != value)
+                {
+                    trieAlgorithm = value;
+                    OnPropertyChanged(nameof(TrieAlgorithm));
+
+                    CreateTrie();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of available Trie algorithms.
+        /// </summary>
+        public List<TrieAlgorithm> TrieAlgorithmList => Enum.GetValues(typeof(TrieAlgorithm)).Cast<TrieAlgorithm>().ToList();
+
+        /// <summary>
         /// Gets the current word list.
         /// </summary>
         public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
@@ -140,7 +166,17 @@
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsTrieReady));
 
-            await Task.Run(() => this.Trie = this.TrieManager.CreateBasicTrie(this.WordList.ToList()));
+            this.CreateTrie();
+        }
+
+        private async void CreateTrie()
+        {
+            this.Results.Clear();
+            this.Trie = null;
+            OnPropertyChanged(nameof(IsTrieReady));
+            OnPropertyChanged(nameof(Results));
+
+            await Task.Run(() => this.Trie = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList()));
 
             OnPropertyChanged(nameof(IsTrieReady));
         }
