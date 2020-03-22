@@ -25,8 +25,9 @@
 
             // Prepare dependency injection for the MainWindow and its MainViewModel.
             var listCreator = new ListCreator();
+            var trieManager = new TrieManager();
 
-            var mainViewModel = new MainViewModel(listCreator);
+            var mainViewModel = new MainViewModel(listCreator, trieManager);
             var mainWindow = new MainWindow(mainViewModel);
             mainWindow.Show();
 

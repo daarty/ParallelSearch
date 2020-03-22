@@ -8,6 +8,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Gma.DataStructures.StringSearch;
     using ParallelSearch.Mvvm;
     using ParallelSearch.Utils;
 
@@ -22,10 +23,12 @@
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
         /// </summary>
-        /// <param name="listCreator">Injected instance of the ListCreator.</param>
-        public MainViewModel(IListCreator listCreator)
+        /// <param name="listCreator">Injected instance of the <see cref="IListCreator"/>.</param>
+        /// <param name="trieManager">Injected instance of the <see cref="ITrieManager"/>.</param>
+        public MainViewModel(IListCreator listCreator, ITrieManager trieManager)
         {
             this.ListCreator = listCreator;
+            this.TrieManager = trieManager;
             CreateListCommand = new DelegateCommand(CreateListCallback);
         }
 
@@ -94,6 +97,8 @@
         public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
 
         private IListCreator ListCreator { get; }
+        private ITrie<string> Trie { get; set; }
+        private ITrieManager TrieManager { get; }
 
         protected void OnPropertyChanged(string name)
         {
@@ -112,6 +117,8 @@
             list.ForEach(x => WordList.Add(x));
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsWordListFilled));
+
+            await Task.Run(() => this.Trie = this.TrieManager.CreateBasicTrie(this.WordList.ToList()));
         }
 
         private async void StartSearch()
@@ -120,7 +127,7 @@
             OnPropertyChanged(nameof(Results));
 
             var results = new List<string>();
-            await Task.Run(() => results = new SearchHelper().SearchWithBasicTrie(this.WordList.ToList(), this.SearchString));
+            await Task.Run(() => results = TrieManager.Search(this.Trie, this.SearchString));
 
             results.ToList().ForEach(x => Results.Add(x));
             OnPropertyChanged(nameof(Results));
