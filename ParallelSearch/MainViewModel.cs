@@ -114,12 +114,15 @@
             OnPropertyChanged(nameof(IsWordListFilled));
         }
 
-        private void StartSearch()
+        private async void StartSearch()
         {
-            // TODO initiate search
-
             Results.Clear();
-            WordList.ToList().ForEach(x => Results.Add(x));
+            OnPropertyChanged(nameof(Results));
+
+            var results = new List<string>();
+            await Task.Run(() => results = new SearchHelper().SearchWithBasicTrie(this.WordList.ToList(), this.SearchString));
+
+            results.ToList().ForEach(x => Results.Add(x));
             OnPropertyChanged(nameof(Results));
         }
     }
