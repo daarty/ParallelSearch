@@ -12,7 +12,7 @@
     /// </summary>
     public partial class App : Application
     {
-        private static ILog logger = LogManager.GetLogger(typeof(App));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(App));
 
         /// <summary>
         /// Creates a new instance of <see cref="App"/>.
@@ -21,7 +21,7 @@
         {
             var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
             XmlConfigurator.Configure(logRepository, new FileInfo("log4netConfig.xml"));
-            logger.Debug("Starting ParallelSearch...");
+            Logger.Debug("Starting ParallelSearch...");
 
             // Prepare dependency injection for the MainWindow and its MainViewModel.
             var listCreator = new ListCreator();
@@ -30,7 +30,7 @@
             var mainWindow = new MainWindow(mainViewModel);
             mainWindow.Show();
 
-            logger.Debug("ParallelSearch started.");
+            Logger.Debug("ParallelSearch started.");
         }
     }
 }

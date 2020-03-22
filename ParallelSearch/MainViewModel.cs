@@ -1,10 +1,12 @@
 ﻿namespace ParallelSearch
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using ParallelSearch.Mvvm;
     using ParallelSearch.Utils;
@@ -14,9 +16,8 @@
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        private static readonly Regex ValidWordRegex = new Regex("^[a-zA-Z]{0,4}$");
         private string searchString = string.Empty;
-
-        private Regex validWordRegex = new Regex("^[a-zA-Z]{0,4}$");
 
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
@@ -24,7 +25,7 @@
         /// <param name="listCreator">Injected instance of the ListCreator.</param>
         public MainViewModel(IListCreator listCreator)
         {
-            this.listCreator = listCreator;
+            this.ListCreator = listCreator;
             CreateListCommand = new DelegateCommand(CreateListCallback);
         }
 
@@ -76,7 +77,7 @@
                     return;
                 }
 
-                if (validWordRegex.IsMatch(value) &&
+                if (ValidWordRegex.IsMatch(value) &&
                     !string.Equals(searchString, value, StringComparison.OrdinalIgnoreCase))
                 {
                     searchString = value.ToUpper();
@@ -92,17 +93,23 @@
         /// </summary>
         public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
 
-        private IListCreator listCreator { get; }
+        private IListCreator ListCreator { get; }
 
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private void CreateListCallback()
+        private async void CreateListCallback()
         {
             WordList.Clear();
-            listCreator.CreateWordList(4).ForEach(x => WordList.Add(x));
+            OnPropertyChanged(nameof(WordList));
+            OnPropertyChanged(nameof(IsWordListFilled));
+
+            var list = new List<string>();
+            await Task.Run(() => list = this.ListCreator.CreateWordList(4));
+
+            list.ForEach(x => WordList.Add(x));
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsWordListFilled));
         }

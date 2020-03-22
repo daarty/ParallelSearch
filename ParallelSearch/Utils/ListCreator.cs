@@ -13,30 +13,30 @@
     public class ListCreator : IListCreator
     {
         private static readonly List<string> Characters = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-        private static ILog logger = LogManager.GetLogger(typeof(ListCreator));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ListCreator));
 
         /// </inheritdoc>
         public List<string> CreateWordList(int wordLength)
         {
             var wordsList = new List<string>();
 
-            logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
+            Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
             var stopWatch = new Stopwatch();
             stopWatch.Start();
 
             CreateWordListRecursive(wordLength, new List<string>(), wordsList);
 
             stopWatch.Stop();
-            logger.Debug($"Successfully created Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
+            Logger.Debug($"Successfully created Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
 
             var random = new Random();
-            logger.Debug($"Permutating Word List with '{wordsList.Count}' elements...");
+            Logger.Debug($"Permutating Word List with '{wordsList.Count}' elements...");
             stopWatch.Restart();
 
             wordsList = wordsList.OrderBy(x => random.Next()).ToList();
 
             stopWatch.Stop();
-            logger.Debug($"Successfully permutated Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
+            Logger.Debug($"Successfully permutated Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
 
             return wordsList;
         }
