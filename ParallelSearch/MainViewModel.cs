@@ -5,7 +5,6 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Gma.DataStructures.StringSearch;
@@ -17,7 +16,7 @@
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
-        private static readonly Regex ValidWordRegex = new Regex("^[a-zA-Z]{0,4}$");
+        private int numberOfCharacters = 4;
         private string searchString = string.Empty;
 
         /// <summary>
@@ -58,6 +57,27 @@
         public bool IsTrieReady => WordList.Any() && this.Trie != null;
 
         /// <summary>
+        /// Gets or sets the number of characters in the words of the wordlist.
+        /// </summary>
+        public string NumberOfCharacters
+        {
+            get => numberOfCharacters.ToString();
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    this.numberOfCharacters = 0;
+                    OnPropertyChanged(nameof(NumberOfCharacters));
+                }
+                else if (int.TryParse(value, out int validValue))
+                {
+                    this.numberOfCharacters = validValue;
+                    OnPropertyChanged(nameof(NumberOfCharacters));
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the number of the search processes.
         /// </summary>
         public string NumberOfSearches { get; private set; }
@@ -80,8 +100,7 @@
                     return;
                 }
 
-                if (ValidWordRegex.IsMatch(value) &&
-                    !string.Equals(searchString, value, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(searchString, value, StringComparison.OrdinalIgnoreCase))
                 {
                     searchString = value.ToUpper();
                     OnPropertyChanged(nameof(SearchString));
@@ -108,12 +127,14 @@
         private async void CreateListCallback()
         {
             this.WordList.Clear();
+            this.Results.Clear();
             this.Trie = null;
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsTrieReady));
+            OnPropertyChanged(nameof(Results));
 
             var list = new List<string>();
-            await Task.Run(() => list = this.ListCreator.CreateWordList(4));
+            await Task.Run(() => list = this.ListCreator.CreateWordList(this.numberOfCharacters));
 
             list.ForEach(x => this.WordList.Add(x));
             OnPropertyChanged(nameof(WordList));

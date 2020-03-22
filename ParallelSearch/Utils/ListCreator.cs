@@ -19,6 +19,11 @@
         {
             var wordList = new List<string>();
 
+            if (wordLength == 0)
+            {
+                return wordList;
+            }
+
             Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
             var timer = new PreciseTimer();
             timer.Start();

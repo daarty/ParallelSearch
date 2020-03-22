@@ -30,6 +30,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -39,7 +40,13 @@
                     Command="{Binding CreateListCommand}">
                 <TextBlock Text="Erstellen" Margin="8,0" TextWrapping="Wrap" />
             </Button>
-            <ListBox Grid.Row="1" Grid.ColumnSpan="2"
+            <TextBlock Grid.Row="1" Text="Anzahl der Zeichen"
+                       Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     VerticalAlignment="Bottom"
+                     TextAlignment="Right"
+                     Text="{Binding NumberOfCharacters, FallbackValue=4}" />
+            <ListBox Grid.Row="2" Grid.ColumnSpan="2"
                      ItemsSource="{Binding WordList, Mode=OneWay, FallbackValue=ABC}" />
         </Grid>
 
@@ -58,7 +65,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.ColumnSpan="2" Style="{StaticResource TitleTextBlockStyle}"
+            <TextBlock Grid.ColumnSpan="3"
+                       Style="{StaticResource TitleTextBlockStyle}"
                        Text="Suchbegriff eingeben" />
             <TextBox Grid.Row="1" Grid.ColumnSpan="3"
                      Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" />
