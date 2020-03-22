@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Text;
     using log4net;
 
@@ -28,29 +29,16 @@
             stopWatch.Stop();
             logger.Debug($"Successfully created Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
 
-            logger.Debug($"Permutating Word List with '{wordsList.Count}' elements...");
-            stopWatch.Reset();
-            stopWatch.Start();
-
-            var indices = new List<int>();
-            for (int i = 0; i < wordsList.Count; i++)
-            {
-                indices.Add(i);
-            }
-
-            var permutatedList = new List<string>();
             var random = new Random();
-            for (int i = 0; i < wordsList.Count; i++)
-            {
-                var permutatedIndex = random.Next(indices.Count);
-                permutatedList.Add(wordsList[permutatedIndex]);
-                indices.RemoveAt(permutatedIndex);
-            }
+            logger.Debug($"Permutating Word List with '{wordsList.Count}' elements...");
+            stopWatch.Restart();
+
+            wordsList = wordsList.OrderBy(x => random.Next()).ToList();
 
             stopWatch.Stop();
             logger.Debug($"Successfully permutated Word List with '{wordsList.Count}' elements in '{stopWatch.ElapsedMilliseconds}' ms.");
 
-            return permutatedList;
+            return wordsList;
         }
 
         private void CreateWordListRecursive(int maxWordLength, List<string> currentWord, List<string> wordsList)
