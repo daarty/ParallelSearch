@@ -1,11 +1,11 @@
-﻿namespace ParallelSearchLibrary
+﻿namespace ParallelSearchLibrary.Result
 {
     using System.Collections.Generic;
     using Timer;
 
-    public class ParallelSearchResult
+    public class SearchResult
     {
-        public List<string> Result { get; set; }
+        public List<int> ResultIds { get; set; }
         public PreciseTimeSpan SearchTime { get; set; }
     }
 }

@@ -9,8 +9,8 @@
     using System.Windows.Input;
     using Gma.DataStructures.StringSearch;
     using ParallelSearch.Mvvm;
-    using ParallelSearchLibrary;
     using ParallelSearchLibrary.List;
+    using ParallelSearchLibrary.Result;
     using ParallelSearchLibrary.Timer;
     using ParallelSearchLibrary.Trie;
 
@@ -23,6 +23,7 @@
         private string searchString = string.Empty;
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
         private TrieAlgorithm trieAlgorithm = TrieAlgorithm.Basic;
+        private List<PreciseTimeSpan> trieCreationTimes = new List<PreciseTimeSpan>();
 
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
@@ -47,9 +48,19 @@
         public ICommand CreateListCommand { get; }
 
         /// <summary>
+        /// Gets the average duration of a trie creation.
+        /// </summary>
+        public string DurationAverageCreation => PreciseTimeSpan.Average(trieCreationTimes).ToString();
+
+        /// <summary>
         /// Gets the average duration of a search.
         /// </summary>
-        public string DurationAverage => PreciseTimeSpan.Average(searchTimes).ToString();
+        public string DurationAverageSearch => PreciseTimeSpan.Average(searchTimes).ToString();
+
+        /// <summary>
+        /// Gets the duration of the last trie creation.
+        /// </summary>
+        public string DurationLastCreation => trieCreationTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets the duration of the last search.
@@ -83,9 +94,14 @@
         }
 
         /// <summary>
+        /// Gets the number of the trie creation processes.
+        /// </summary>
+        public string NumberOfCreations => this.trieCreationTimes.Count.ToString();
+
+        /// <summary>
         /// Gets the number of the search processes.
         /// </summary>
-        public string NumberOfSearches => searchTimes.Count.ToString();
+        public string NumberOfSearches => this.searchTimes.Count.ToString();
 
         /// <summary>
         /// Gets the current word list.
@@ -120,15 +136,18 @@
         /// </summary>
         public TrieAlgorithm TrieAlgorithm
         {
-            get => trieAlgorithm;
+            get => this.trieAlgorithm;
             set
             {
                 if (trieAlgorithm != value)
                 {
-                    trieAlgorithm = value;
-                    OnPropertyChanged(nameof(TrieAlgorithm));
+                    this.trieAlgorithm = value;
+                    this.OnPropertyChanged(nameof(TrieAlgorithm));
 
-                    CreateTrie();
+                    this.trieCreationTimes.Clear();
+                    this.searchTimes.Clear();
+                    this.RefreshStatistics();
+                    this.CreateTrie();
                 }
             }
         }
@@ -144,7 +163,7 @@
         public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
 
         private IListCreator ListCreator { get; }
-        private ITrie<string> Trie { get; set; }
+        private ITrie<int> Trie { get; set; }
         private ITrieManager TrieManager { get; }
 
         protected void OnPropertyChanged(string name)
@@ -178,16 +197,24 @@
             OnPropertyChanged(nameof(IsTrieReady));
             OnPropertyChanged(nameof(Results));
 
-            await Task.Run(() => this.Trie = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList()));
+            TrieCreationResult result =
+                await Task.Run(() => result = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList()));
 
+            this.Trie = result.Trie;
             OnPropertyChanged(nameof(IsTrieReady));
+
+            this.trieCreationTimes.Add(result.CreationTime);
+            this.RefreshStatistics();
         }
 
         private void RefreshStatistics()
         {
             OnPropertyChanged(nameof(DurationLastSearch));
-            OnPropertyChanged(nameof(DurationAverage));
+            OnPropertyChanged(nameof(DurationAverageSearch));
             OnPropertyChanged(nameof(NumberOfSearches));
+            OnPropertyChanged(nameof(DurationLastCreation));
+            OnPropertyChanged(nameof(DurationAverageCreation));
+            OnPropertyChanged(nameof(NumberOfCreations));
         }
 
         private async void StartSearch()
@@ -195,13 +222,13 @@
             Results.Clear();
             OnPropertyChanged(nameof(Results));
 
-            ParallelSearchResult result =
-            await Task.Run(() => result = TrieManager.Search(this.Trie, this.SearchString));
+            SearchResult result =
+                await Task.Run(() => result = this.TrieManager.Search(this.Trie, this.SearchString));
 
-            result.Result.ForEach(x => Results.Add(x));
+            result.ResultIds.ForEach(x => Results.Add(this.WordList[x]));
             OnPropertyChanged(nameof(Results));
 
-            searchTimes.Add(result.SearchTime);
+            this.searchTimes.Add(result.SearchTime);
             this.RefreshStatistics();
         }
     }

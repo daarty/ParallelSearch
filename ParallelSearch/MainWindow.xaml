@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:ParallelSearch"
         mc:Ignorable="d"
         Title="Parallel Search"
-        Width="800" Height="450"
-        MinWidth="400" MinHeight="300">
+        Width="900" Height="500"
+        MinWidth="780" MinHeight="350">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -22,10 +22,13 @@
             <ColumnDefinition Width=".60*" MinWidth="70" />
             <ColumnDefinition Width=".40*" MinWidth="70" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width=".75*" />
-            <ColumnDefinition Width=".25*" />
+            <ColumnDefinition Width=".70*" />
+            <ColumnDefinition Width=".30*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -51,27 +54,27 @@
                  TextAlignment="Right"
                  Text="{Binding NumberOfCharacters, FallbackValue=4}" />
 
-        <ListBox Grid.Row="2" Grid.RowSpan="4" Grid.ColumnSpan="2"
+        <ListBox Grid.Row="2" Grid.RowSpan="7" Grid.ColumnSpan="2"
                  ItemsSource="{Binding WordList, Mode=OneWay, FallbackValue=ABC}" />
 
         <!--Search TextBox-->
         <TextBlock Grid.Column="2"
                    Style="{StaticResource TitleTextBlockStyle}"
                    Text="Suchbegriff eingeben" />
-        <TextBox Grid.Row="1" Grid.Column="2"
+        <TextBox Grid.Row="1" Grid.Column="2" IsEnabled="{Binding IsTrieReady}"
                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--Search Results-->
         <TextBlock Grid.Row="2" Grid.Column="2"
                    Style="{StaticResource TitleTextBlockStyle}"
                    Text="Suchergebnisse" />
-        <ListBox Grid.Row="3" Grid.Column="2" Grid.RowSpan="3"
+        <ListBox Grid.Row="3" Grid.Column="2" Grid.RowSpan="6"
                  ItemsSource="{Binding Results, Mode=OneWay}" />
 
         <!--Trie Algorithm Selection-->
         <TextBlock Grid.Column="3" Grid.ColumnSpan="2"
                    Style="{StaticResource TitleTextBlockStyle}"
-                   Text="Suchbegriff eingeben" />
+                   Text="Algorithmus auswählen" />
         <ComboBox Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"
                   ItemsSource="{Binding TrieAlgorithmList}"
                   SelectedValue="{Binding TrieAlgorithm}" />
@@ -81,20 +84,35 @@
                    Style="{StaticResource TitleTextBlockStyle}"
                    Text="Statistiken" />
         <TextBlock Grid.Row="3" Grid.Column="3"
-                   Text="Suchdauer letzte Suche" />
+                   Text="Dauer letzte Trie Erzeugung" />
         <TextBlock Grid.Row="3" Grid.Column="4"
                    Style="{StaticResource ResultValueTextBlockStyle}"
-                   Text="{Binding DurationLastSearch, Mode=OneWay, FallbackValue=-}" />
+                   Text="{Binding DurationLastCreation, Mode=OneWay, FallbackValue=-}" />
         <TextBlock Grid.Row="4" Grid.Column="3"
-                   Text="Suchdauer Durchschnitt" />
+                   Text="Trie Erzeugung Durchschnitt" />
         <TextBlock Grid.Row="4" Grid.Column="4"
                    Style="{StaticResource ResultValueTextBlockStyle}"
-                   Text="{Binding DurationAverage, Mode=OneWay, FallbackValue=-}" />
+                   Text="{Binding DurationAverageCreation, Mode=OneWay, FallbackValue=-}" />
         <TextBlock Grid.Row="5" Grid.Column="3"
-                   Text="Anzahl der Suchen" />
+                   Text="Anzahl der Trie Erzeugungen" />
         <TextBlock Grid.Row="5" Grid.Column="4"
                    Style="{StaticResource ResultValueTextBlockStyle}"
+                   Text="{Binding NumberOfCreations, Mode=OneWay, FallbackValue=0}" />
+
+        <TextBlock Grid.Row="6" Grid.Column="3"
+                   Text="Suchdauer letzte Suche" />
+        <TextBlock Grid.Row="6" Grid.Column="4"
+                   Style="{StaticResource ResultValueTextBlockStyle}"
+                   Text="{Binding DurationLastSearch, Mode=OneWay, FallbackValue=-}" />
+        <TextBlock Grid.Row="7" Grid.Column="3"
+                   Text="Suchdauer Durchschnitt" />
+        <TextBlock Grid.Row="7" Grid.Column="4"
+                   Style="{StaticResource ResultValueTextBlockStyle}"
+                   Text="{Binding DurationAverageSearch, Mode=OneWay, FallbackValue=-}" />
+        <TextBlock Grid.Row="8" Grid.Column="3"
+                   Text="Anzahl der Suchen" />
+        <TextBlock Grid.Row="9" Grid.Column="4"
+                   Style="{StaticResource ResultValueTextBlockStyle}"
                    Text="{Binding NumberOfSearches, Mode=OneWay, FallbackValue=0}" />
-        <!--</Grid>-->
     </Grid>
 </Window>

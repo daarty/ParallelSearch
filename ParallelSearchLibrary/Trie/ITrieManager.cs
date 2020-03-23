@@ -2,11 +2,12 @@
 {
     using System.Collections.Generic;
     using Gma.DataStructures.StringSearch;
+    using ParallelSearchLibrary.Result;
 
     public interface ITrieManager
     {
-        ITrie<string> CreateTrie(TrieAlgorithm algorithm, List<string> wordList);
+        TrieCreationResult CreateTrie(TrieAlgorithm algorithm, List<string> wordList);
 
-        ParallelSearchResult Search(ITrie<string> trie, string searchWord);
+        SearchResult Search(ITrie<int> trie, string searchWord);
     }
 }

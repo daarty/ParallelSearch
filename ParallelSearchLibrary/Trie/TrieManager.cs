@@ -4,36 +4,37 @@
     using System.Linq;
     using Gma.DataStructures.StringSearch;
     using log4net;
+    using ParallelSearchLibrary.Result;
     using Timer;
 
     public class TrieManager : ITrieManager
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
 
-        public ITrie<string> CreateTrie(TrieAlgorithm algorithm, List<string> wordList)
+        public TrieCreationResult CreateTrie(TrieAlgorithm algorithm, List<string> wordList)
         {
             Logger.Debug($"Building the '{algorithm}' Trie with '{wordList.Count}' elements...");
             var timer = new PreciseTimer();
             timer.Start();
 
-            ITrie<string> trie;
+            ITrie<int> trie;
 
             switch (algorithm)
             {
                 case TrieAlgorithm.Basic:
-                    trie = new Trie<string>();
+                    trie = new Trie<int>();
                     break;
 
                 case TrieAlgorithm.Concurrent:
-                    trie = new ConcurrentTrie<string>();
+                    trie = new ConcurrentTrie<int>();
                     break;
 
                 case TrieAlgorithm.Patricia:
-                    trie = new PatriciaTrie<string>();
+                    trie = new PatriciaTrie<int>();
                     break;
 
                 case TrieAlgorithm.Ukkonen:
-                    trie = new UkkonenTrie<string>();
+                    trie = new UkkonenTrie<int>();
                     break;
 
                 default:
@@ -41,18 +42,18 @@
                     return null;
             }
 
-            foreach (var word in wordList)
+            for (int i = 0; i < wordList.Count; i++)
             {
-                trie.Add(word, word);
+                trie.Add(wordList[i], i);
             }
 
             var timeSpan = timer.Stop();
             Logger.Debug($"Successfully built '{algorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
 
-            return trie;
+            return new TrieCreationResult { Trie = trie, CreationTime = timeSpan };
         }
 
-        public ParallelSearchResult Search(ITrie<string> trie, string searchWord)
+        public SearchResult Search(ITrie<int> trie, string searchWord)
         {
             var timer = new PreciseTimer();
             timer.Start();
@@ -62,7 +63,7 @@
             var timeSpan = timer.Stop();
             Logger.Debug($"Successfully found Trie with '{results.Count()}' results in '{timeSpan}'.");
 
-            return new ParallelSearchResult { Result = results.ToList(), SearchTime = timeSpan };
+            return new SearchResult { ResultIds = results.ToList(), SearchTime = timeSpan };
         }
     }
 }

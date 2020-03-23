@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="log4netConfig.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\ParallelSearchLibrary\ParallelSearchLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ParallelSearchLibrary\ParallelSearchLibrary.csproj" />
+    <Resource Include="log4netConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   
 </Project>

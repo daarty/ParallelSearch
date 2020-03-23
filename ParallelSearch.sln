@@ -5,7 +5,14 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelSearch", "ParallelSearch\ParallelSearch.csproj", "{E0A1526D-E87F-4D9E-86D8-832FE1AC2CF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSearchLibrary", "ParallelSearchLibrary\ParallelSearchLibrary.csproj", "{9C31021B-77BE-4C72-8AD1-C2BF8CDE2D43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelSearchLibrary", "ParallelSearchLibrary\ParallelSearchLibrary.csproj", "{9C31021B-77BE-4C72-8AD1-C2BF8CDE2D43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParallelSearchTestTool", "ParallelSearchTestTool\ParallelSearchTestTool.csproj", "{C0708486-66DD-4FFC-AECB-F0216AB95213}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A347CEC4-AB60-43EE-A995-98013D96F755}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{9C31021B-77BE-4C72-8AD1-C2BF8CDE2D43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C31021B-77BE-4C72-8AD1-C2BF8CDE2D43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C31021B-77BE-4C72-8AD1-C2BF8CDE2D43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
