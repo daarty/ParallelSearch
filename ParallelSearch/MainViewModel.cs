@@ -7,7 +7,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Gma.DataStructures.StringSearch;
     using log4net;
     using ParallelSearch.Mvvm;
     using ParallelSearchLibrary.List;
@@ -26,7 +25,6 @@
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
-        private TrieAlgorithm trieAlgorithm = TrieAlgorithm.Basic;
         private List<PreciseTimeSpan> trieCreationTimes = new List<PreciseTimeSpan>();
         private List<PreciseTimeSpan> wordListCreationTimes = new List<PreciseTimeSpan>();
 
@@ -101,7 +99,7 @@
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
         /// </summary>
-        public bool IsTrieReady => (WordList?.Any() ?? false) && this.Trie != null;
+        public bool IsTrieReady => (WordList?.Any() ?? false) && this.TrieManager.Trie != null;
 
         /// <summary>
         /// Gets or sets the number of characters in the words of the wordlist.
@@ -171,12 +169,12 @@
         /// </summary>
         public TrieAlgorithm TrieAlgorithm
         {
-            get => this.trieAlgorithm;
+            get => this.TrieManager.TrieAlgorithm;
             set
             {
-                if (trieAlgorithm != value)
+                if (this.TrieManager.TrieAlgorithm != value)
                 {
-                    this.trieAlgorithm = value;
+                    this.TrieManager.TrieAlgorithm = value;
                     this.OnPropertyChanged(nameof(TrieAlgorithm));
 
                     this.trieCreationTimes.Clear();
@@ -199,7 +197,6 @@
 
         private IListCreator ListCreator { get; }
         private List<int> ResultsList { get; set; }
-        private ITrie<int> Trie { get; set; }
         private ITrieManager TrieManager { get; }
         private List<string> WordList { get; set; }
 
@@ -212,7 +209,7 @@
         {
             this.WordCollection.Clear();
             this.ResultsCollection.Clear();
-            this.Trie = null;
+            this.TrieManager.Trie = null;
             OnPropertyChanged(nameof(WordCollection));
             OnPropertyChanged(nameof(IsTrieReady));
             OnPropertyChanged(nameof(ResultsCollection));
@@ -255,7 +252,7 @@
         private async void CreateTrie()
         {
             this.ResultsCollection.Clear();
-            this.Trie = null;
+            this.TrieManager.Trie = null;
             OnPropertyChanged(nameof(IsTrieReady));
             OnPropertyChanged(nameof(ResultsCollection));
 
@@ -264,11 +261,11 @@
             {
                 if (this.DoParallelize)
                 {
-                    result = this.TrieManager.CreateTrieParallel(this.TrieAlgorithm, this.WordList.ToList());
+                    result = this.TrieManager.CreateTrieParallel(this.WordList.ToList());
                 }
                 else
                 {
-                    result = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList());
+                    result = this.TrieManager.CreateTrie(this.WordList.ToList());
                 }
             });
 
@@ -278,7 +275,6 @@
                 return;
             }
 
-            this.Trie = result.Trie;
             OnPropertyChanged(nameof(IsTrieReady));
 
             this.trieCreationTimes.Add(result.CreationTime);
@@ -304,7 +300,7 @@
             OnPropertyChanged(nameof(ResultsCollection));
 
             SearchResult result =
-                await Task.Run(() => result = this.TrieManager.Search(this.Trie, this.SearchString));
+                await Task.Run(() => result = this.TrieManager.Search(this.SearchString));
 
             this.ResultsList = result.ResultIds;
             if (this.DoRefreshResults)

@@ -6,10 +6,13 @@
 
     public interface ITrieManager
     {
-        TrieCreationResult CreateTrie(TrieAlgorithm algorithm, List<string> wordList);
+        TrieAlgorithm TrieAlgorithm { get; set; }
+        ITrie<int> Trie { get; set; }
 
-        TrieCreationResult CreateTrieParallel(TrieAlgorithm algorithm, List<string> wordList);
+        TrieCreationResult CreateTrie(List<string> wordList);
 
-        SearchResult Search(ITrie<int> trie, string searchWord);
+        TrieCreationResult CreateTrieParallel(List<string> wordList);
+
+        SearchResult Search(string searchWord);
     }
 }

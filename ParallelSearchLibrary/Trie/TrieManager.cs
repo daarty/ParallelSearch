@@ -9,17 +9,19 @@
 
     public class TrieManager : ITrieManager
     {
+        public ITrie<int> Trie { get; set; }
+
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
 
-        public TrieCreationResult CreateTrie(TrieAlgorithm algorithm, List<string> wordList)
+        public TrieCreationResult CreateTrie(List<string> wordList)
         {
-            Logger.Debug($"Building the '{algorithm}' Trie with '{wordList.Count}' elements...");
+            Logger.Debug($"Building the '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements...");
             var timer = new PreciseTimer();
             timer.Start();
 
             ITrie<int> trie;
 
-            switch (algorithm)
+            switch (this.TrieAlgorithm)
             {
                 case TrieAlgorithm.Basic:
                     trie = new Trie<int>();
@@ -38,7 +40,7 @@
                     break;
 
                 default:
-                    Logger.Warn($"Unknown Trie Algorithm '{algorithm}'. Returning null.");
+                    Logger.Warn($"Unknown Trie Algorithm '{this.TrieAlgorithm}'. Returning null.");
                     return null;
             }
 
@@ -48,23 +50,27 @@
             }
 
             var timeSpan = timer.Stop();
-            Logger.Debug($"Successfully built '{algorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
+            Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
+
+            this.Trie = trie;
 
             return new TrieCreationResult { Trie = trie, CreationTime = timeSpan };
         }
 
-        public TrieCreationResult CreateTrieParallel(TrieAlgorithm algorithm, List<string> wordList)
+        public TrieAlgorithm TrieAlgorithm { get; set; } = TrieAlgorithm.Basic;
+
+        public TrieCreationResult CreateTrieParallel(List<string> wordList)
         {
             // TODO implement parallelism
-            return CreateTrie(algorithm, wordList);
+            return CreateTrie(wordList);
         }
 
-        public SearchResult Search(ITrie<int> trie, string searchWord)
+        public SearchResult Search(string searchWord)
         {
             var timer = new PreciseTimer();
             timer.Start();
 
-            var results = trie.Retrieve(searchWord);
+            var results = this.Trie.Retrieve(searchWord);
 
             var timeSpan = timer.Stop();
             Logger.Debug($"Successfully found Trie with '{results.Count()}' results in '{timeSpan}'.");
