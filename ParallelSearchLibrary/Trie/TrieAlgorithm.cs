@@ -5,6 +5,8 @@
         Basic,
         Concurrent,
         Patricia,
-        Ukkonen
+        Ukkonen,
+        OwnImplementationLinear,
+        OwnImplementationParallel
     }
 }

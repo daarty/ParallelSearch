@@ -6,8 +6,8 @@
     using System.Reflection;
     using log4net;
     using log4net.Config;
-    using ParallelSearchLibrary.List;
     using ParallelSearchLibrary.Trie;
+    using ParallelSearchLibrary.Words;
 
     internal class Program
     {
@@ -33,8 +33,8 @@
             Logger.Debug("Starting Trie Test Tool...");
 
             var trieManager = new TrieManager();
-            var listCreator = new ListCreator();
-            var mainMenu = new MainMenu(listCreator, trieManager);
+            var wordCreator = new WordCreator();
+            var mainMenu = new MainMenu(wordCreator, trieManager);
 
             if (AutomaticBenchmarkArguments.Contains(firstArgument, StringComparer.OrdinalIgnoreCase))
             {

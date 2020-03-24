@@ -1,4 +1,4 @@
-﻿namespace ParallelSearchLibrary.List
+﻿namespace ParallelSearchLibrary.Words
 {
     using System;
     using System.Collections.Concurrent;
@@ -10,13 +10,13 @@
     using Timer;
 
     /// <summary>
-    /// Implementation of the <see cref="IListCreator"/> interface.
+    /// Implementation of the <see cref="IWordCreator"/> interface.
     /// </summary>
-    public class ListCreator : IListCreator
+    public class WordCreator : IWordCreator
     {
         private static readonly char[] CharacterArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ListCreator));
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(WordCreator));
 
         /// </inheritdoc>
         public WordListResult CreateWordList(int wordLength)
@@ -146,8 +146,8 @@
             return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan(timeSpanCreation.TotalMicroseconds + timeSpanShuffle.TotalMicroseconds) };
         }
 
-        // TODO put this here and rename the class to WordManager
-        private string GetRandomWord(int numberOfCharacters)
+        /// </inheritdoc>
+        public string GetRandomWord(int numberOfCharacters)
         {
             var random = new Random();
 

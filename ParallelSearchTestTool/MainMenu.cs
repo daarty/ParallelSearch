@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using log4net;
-    using ParallelSearchLibrary.List;
     using ParallelSearchLibrary.Timer;
     using ParallelSearchLibrary.Trie;
+    using ParallelSearchLibrary.Words;
 
     public class MainMenu
     {
@@ -21,13 +21,13 @@
         private static readonly string[] NegativeInput = { "no", "n" };
         private static readonly string[] PositiveInput = { "yes", "y" };
 
-        public MainMenu(IListCreator listCreator, ITrieManager trieManager)
+        public MainMenu(IWordCreator wordCreator, ITrieManager trieManager)
         {
-            this.ListCreator = listCreator;
+            this.WordCreator = wordCreator;
             this.TrieManager = trieManager;
         }
 
-        private IListCreator ListCreator { get; }
+        private IWordCreator WordCreator { get; }
 
         private ITrieManager TrieManager { get; }
 
@@ -118,21 +118,6 @@
             return numberOfRuns;
         }
 
-        // TODO move to list creator
-        private string GetRandomSearchWord(int maxNumberOfCharacters)
-        {
-            var random = new Random();
-            var numberOfCharacters = random.Next(maxNumberOfCharacters) + 1;
-
-            var charArray = new char[numberOfCharacters];
-            for (int i = 0; i < numberOfCharacters; i++)
-            {
-                charArray[i] = CharactersArray[random.Next(CharactersArray.Length)];
-            }
-
-            return new string(charArray);
-        }
-
         private TrieAlgorithm GetTrieAlgorithm()
         {
             var selectedAlgorithm = TrieAlgorithm.Basic;
@@ -186,7 +171,7 @@
             Logger.Info($"- the average result of '{numberOfRuns}' executions of the test");
             Logger.Info(string.Empty);
 
-            var wordListCreationResult = this.ListCreator.CreateWordList(numberOfCharacters);
+            var wordListCreationResult = this.WordCreator.CreateWordList(numberOfCharacters);
 
             // TODO wordlist creation time?
             var creationTimes = new List<PreciseTimeSpan>();
@@ -200,7 +185,7 @@
                 var creationResult = this.TrieManager.CreateTrie(wordListCreationResult.WordList);
                 creationTimes.Add(creationResult.CreationTime);
 
-                var randomSearchWord = GetRandomSearchWord(numberOfCharacters);
+                var randomSearchWord = this.WordCreator.GetRandomWord(numberOfCharacters);
 
                 var searchResult = this.TrieManager.Search(randomSearchWord);
                 searchTimes.Add(searchResult.SearchTime);

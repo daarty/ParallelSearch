@@ -9,10 +9,10 @@
     using System.Windows.Input;
     using log4net;
     using ParallelSearch.Mvvm;
-    using ParallelSearchLibrary.List;
     using ParallelSearchLibrary.Result;
     using ParallelSearchLibrary.Timer;
     using ParallelSearchLibrary.Trie;
+    using ParallelSearchLibrary.Words;
 
     /// <summary>
     /// ViewModel class for the MainWindow.
@@ -30,11 +30,11 @@
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
         /// </summary>
-        /// <param name="listCreator">Injected instance of the <see cref="IListCreator"/>.</param>
+        /// <param name="wordCreator">Injected instance of the <see cref="IWordCreator"/>.</param>
         /// <param name="trieManager">Injected instance of the <see cref="ITrieManager"/>.</param>
-        public MainViewModel(IListCreator listCreator, ITrieManager trieManager)
+        public MainViewModel(IWordCreator wordCreator, ITrieManager trieManager)
         {
-            this.ListCreator = listCreator;
+            this.ListCreator = wordCreator;
             this.TrieManager = trieManager;
             CreateListCommand = new DelegateCommand(CreateListCallback);
         }
@@ -212,7 +212,7 @@
         /// </summary>
         public ObservableCollection<string> WordCollection { get; private set; } = new ObservableCollection<string>();
 
-        private IListCreator ListCreator { get; }
+        private IWordCreator ListCreator { get; }
         private List<int> ResultsList { get; set; }
         private ITrieManager TrieManager { get; }
         private List<string> WordList { get; set; }

@@ -5,8 +5,8 @@
     using System.Windows;
     using log4net;
     using log4net.Config;
-    using ParallelSearchLibrary.List;
     using ParallelSearchLibrary.Trie;
+    using ParallelSearchLibrary.Words;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -23,10 +23,10 @@
             this.AddLogger();
 
             // Prepare dependency injection for the MainWindow and its MainViewModel.
-            var listCreator = new ListCreator();
+            var wordCreator = new WordCreator();
             var trieManager = new TrieManager();
 
-            var mainViewModel = new MainViewModel(listCreator, trieManager);
+            var mainViewModel = new MainViewModel(wordCreator, trieManager);
             var mainWindow = new MainWindow(mainViewModel);
             mainWindow.Show();
 
