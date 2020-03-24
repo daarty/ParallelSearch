@@ -53,6 +53,12 @@
             return new TrieCreationResult { Trie = trie, CreationTime = timeSpan };
         }
 
+        public TrieCreationResult CreateTrieParallel(TrieAlgorithm algorithm, List<string> wordList)
+        {
+            // TODO implement parallelism
+            return CreateTrie(algorithm, wordList);
+        }
+
         public SearchResult Search(ITrie<int> trie, string searchWord)
         {
             var timer = new PreciseTimer();

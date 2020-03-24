@@ -1,9 +1,10 @@
 ﻿namespace ParallelSearchLibrary.List
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
+    using System.Threading.Tasks;
     using log4net;
     using ParallelSearchLibrary.Result;
     using Timer;
@@ -14,7 +15,7 @@
     public class ListCreator : IListCreator
     {
         // TODO replace List<string> with char[] and new string[charArray]
-        private static readonly List<string> Characters = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        private static readonly char[] Characters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ListCreator));
 
@@ -28,50 +29,78 @@
                 return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan() };
             }
 
+            int numberOfWords = Convert.ToInt32(Math.Pow(Characters.Length, wordLength));
+            var wordsArray = new string[numberOfWords];
+
             Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
             var timer = new PreciseTimer();
             timer.Start();
 
-            CreateWordListRecursive(wordLength, new List<string>(), wordList);
+            for (int i = 0; i < numberOfWords; i++)
+            {
+                wordsArray[i] = GetRandomWord(wordLength);
+            }
 
-            var timeSpan = timer.Stop();
-            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpan}'.");
+            var timeSpanCreation = timer.Stop();
+            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpanCreation}'.");
 
             var random = new Random();
             Logger.Debug($"Permutating Word List with '{wordList.Count}' elements...");
             timer.Start();
 
-            wordList = wordList.OrderBy(x => random.Next()).ToList();
+            wordList = wordsArray.OrderBy(x => random.Next()).ToList();
 
-            timeSpan = timer.Stop();
-            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpan}'.");
+            var timeSpanShuffle = timer.Stop();
+            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpanShuffle}'.");
 
-            return new WordListResult { WordList = wordList, CreationTime = timeSpan };
+            return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan(timeSpanCreation.TotalMicroseconds + timeSpanShuffle.TotalMicroseconds) };
         }
 
-        private void CreateWordListRecursive(int maxWordLength, List<string> currentWord, List<string> wordList)
+        /// </inheritdoc>
+        public WordListResult CreateWordListParallel(int wordLength)
         {
-            foreach (var character in Characters)
+            var wordList = new List<string>();
+
+            if (wordLength == 0)
             {
-                currentWord.Add(character);
-
-                if (maxWordLength == currentWord.Count)
-                {
-                    var stringBuilder = new StringBuilder();
-                    foreach (var letter in currentWord)
-                    {
-                        stringBuilder.Append(letter);
-                    }
-
-                    wordList.Add(stringBuilder.ToString());
-                }
-                else
-                {
-                    CreateWordListRecursive(maxWordLength, currentWord, wordList);
-                }
-
-                currentWord.RemoveAt(currentWord.Count - 1);
+                return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan() };
             }
+
+            int numberOfWords = Convert.ToInt32(Math.Pow(Characters.Length, wordLength));
+            var wordsBag = new ConcurrentBag<string>();
+
+            Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
+            var timer = new PreciseTimer();
+            timer.Start();
+
+            Parallel.For(0, numberOfWords, x => wordsBag.Add(GetRandomWord(wordLength)));
+
+            var timeSpanCreation = timer.Stop();
+            Logger.Debug($"Successfully created Word List with '{wordList.Count}' elements in '{timeSpanCreation}'.");
+
+            var random = new Random();
+            Logger.Debug($"Permutating Word List with '{wordList.Count}' elements...");
+            timer.Start();
+
+            wordList = wordsBag.OrderBy(x => random.Next()).ToList();
+
+            var timeSpanShuffle = timer.Stop();
+            Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpanShuffle}'.");
+
+            return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan(timeSpanCreation.TotalMicroseconds + timeSpanShuffle.TotalMicroseconds) };
+        }
+
+        private string GetRandomWord(int numberOfCharacters)
+        {
+            var random = new Random();
+
+            var charArray = new char[numberOfCharacters];
+            for (int i = 0; i < numberOfCharacters; i++)
+            {
+                charArray[i] = Characters[random.Next(Characters.Length)];
+            }
+
+            return new string(charArray);
         }
     }
 }

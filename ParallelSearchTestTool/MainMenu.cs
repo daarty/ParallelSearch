@@ -16,7 +16,7 @@
         private const int DefaultNumberOfCharacters = 4;
         private const int DefaultNumberOfRuns = 10;
         private const double NumberOfCharactersInConsoleLine = 120;
-        private static readonly char[] charactersArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+        private static readonly char[] CharactersArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         private static readonly string[] NegativeInput = { "no", "n" };
         private static readonly string[] PositiveInput = { "yes", "y" };
@@ -118,6 +118,7 @@
             return numberOfRuns;
         }
 
+        // TODO move to list creator
         private string GetRandomSearchWord(int maxNumberOfCharacters)
         {
             var random = new Random();
@@ -126,7 +127,7 @@
             var charArray = new char[numberOfCharacters];
             for (int i = 0; i < numberOfCharacters; i++)
             {
-                charArray[i] = charactersArray[random.Next(charactersArray.Length)];
+                charArray[i] = CharactersArray[random.Next(CharactersArray.Length)];
             }
 
             return new string(charArray);
@@ -185,8 +186,9 @@
             Logger.Info($"- the average result of '{numberOfRuns}' executions of the test");
             Logger.Info(string.Empty);
 
-            var wordList = this.ListCreator.CreateWordList(numberOfCharacters);
+            var wordListCreationResult = this.ListCreator.CreateWordList(numberOfCharacters);
 
+            // TODO wordlist creation time?
             var creationTimes = new List<PreciseTimeSpan>();
             var searchTimes = new List<PreciseTimeSpan>();
 
@@ -194,7 +196,7 @@
 
             for (int i = 0; i < numberOfRuns; i++)
             {
-                var creationResult = this.TrieManager.CreateTrie(trieAlgorithm, wordList);
+                var creationResult = this.TrieManager.CreateTrie(trieAlgorithm, wordListCreationResult.WordList);
                 creationTimes.Add(creationResult.CreationTime);
 
                 var randomSearchWord = GetRandomSearchWord(numberOfCharacters);

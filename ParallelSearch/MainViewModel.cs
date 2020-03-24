@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Gma.DataStructures.StringSearch;
+    using log4net;
     using ParallelSearch.Mvvm;
     using ParallelSearchLibrary.List;
     using ParallelSearchLibrary.Result;
@@ -19,6 +20,9 @@
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(MainViewModel));
+
+        private bool doRefreshResults;
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
@@ -47,6 +51,22 @@
         /// Gets the command that loads the file with the data points.
         /// </summary>
         public ICommand CreateListCommand { get; }
+
+        public bool DoParallelize { get; set; }
+
+        public bool DoRefreshResults
+        {
+            get => doRefreshResults;
+            set
+            {
+                if (doRefreshResults != value)
+                {
+                    doRefreshResults = value;
+                    OnPropertyChanged(nameof(WordCollection));
+                    OnPropertyChanged(nameof(ResultsCollection));
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the average duration of a trie creation.
@@ -81,7 +101,7 @@
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
         /// </summary>
-        public bool IsTrieReady => WordList.Any() && this.Trie != null;
+        public bool IsTrieReady => (WordList?.Any() ?? false) && this.Trie != null;
 
         /// <summary>
         /// Gets or sets the number of characters in the words of the wordlist.
@@ -116,10 +136,12 @@
         /// </summary>
         public string NumberOfSearches => this.searchTimes.Count.ToString();
 
+        public string NumberOfWords => WordList?.Any() ?? false ? WordList.Count.ToString() : "-";
+
         /// <summary>
         /// Gets the current word list.
         /// </summary>
-        public ObservableCollection<string> Results { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> ResultsCollection { get; private set; } = new ObservableCollection<string>();
 
         /// <summary>
         /// Gets or sets the current search string.
@@ -173,13 +195,13 @@
         /// <summary>
         /// Gets the current word list.
         /// </summary>
-        public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> WordCollection { get; private set; } = new ObservableCollection<string>();
 
         private IListCreator ListCreator { get; }
-
+        private List<int> ResultsList { get; set; }
         private ITrie<int> Trie { get; set; }
-
         private ITrieManager TrieManager { get; }
+        private List<string> WordList { get; set; }
 
         protected void OnPropertyChanged(string name)
         {
@@ -188,19 +210,41 @@
 
         private async void CreateListCallback()
         {
-            this.WordList.Clear();
-            this.Results.Clear();
+            this.WordCollection.Clear();
+            this.ResultsCollection.Clear();
             this.Trie = null;
-            OnPropertyChanged(nameof(WordList));
+            OnPropertyChanged(nameof(WordCollection));
             OnPropertyChanged(nameof(IsTrieReady));
-            OnPropertyChanged(nameof(Results));
+            OnPropertyChanged(nameof(ResultsCollection));
 
-            WordListResult result =
-            await Task.Run(() => result = this.ListCreator.CreateWordList(this.numberOfCharacters));
+            WordListResult result = null;
+            await Task.Run(() =>
+            {
+                if (this.DoParallelize)
+                {
+                    result = this.ListCreator.CreateWordListParallel(this.numberOfCharacters);
+                }
+                else
+                {
+                    result = this.ListCreator.CreateWordList(this.numberOfCharacters);
+                }
+            });
 
-            result.WordList.ForEach(x => this.WordList.Add(x));
-            OnPropertyChanged(nameof(WordList));
+            if (result == null)
+            {
+                Logger.Warn("WordList creation result is null.");
+                return;
+            }
+
+            this.WordList = result.WordList;
+
+            if (this.DoRefreshResults)
+            {
+                result.WordList.ForEach(x => this.WordCollection.Add(x));
+                OnPropertyChanged(nameof(WordCollection));
+            }
             OnPropertyChanged(nameof(IsTrieReady));
+            OnPropertyChanged(nameof(NumberOfWords));
 
             this.wordListCreationTimes.Add(result.CreationTime);
             this.RefreshStatistics();
@@ -210,13 +254,29 @@
 
         private async void CreateTrie()
         {
-            this.Results.Clear();
+            this.ResultsCollection.Clear();
             this.Trie = null;
             OnPropertyChanged(nameof(IsTrieReady));
-            OnPropertyChanged(nameof(Results));
+            OnPropertyChanged(nameof(ResultsCollection));
 
-            TrieCreationResult result =
-                await Task.Run(() => result = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList()));
+            TrieCreationResult result = null;
+            await Task.Run(() =>
+            {
+                if (this.DoParallelize)
+                {
+                    result = this.TrieManager.CreateTrieParallel(this.TrieAlgorithm, this.WordList.ToList());
+                }
+                else
+                {
+                    result = this.TrieManager.CreateTrie(this.TrieAlgorithm, this.WordList.ToList());
+                }
+            });
+
+            if (result == null)
+            {
+                Logger.Warn("Trie creation result is null.");
+                return;
+            }
 
             this.Trie = result.Trie;
             OnPropertyChanged(nameof(IsTrieReady));
@@ -224,7 +284,6 @@
             this.trieCreationTimes.Add(result.CreationTime);
             this.RefreshStatistics();
         }
-
 
         private void RefreshStatistics()
         {
@@ -236,18 +295,23 @@
             OnPropertyChanged(nameof(DurationLastCreation));
             OnPropertyChanged(nameof(DurationAverageCreation));
             OnPropertyChanged(nameof(NumberOfCreations));
+            OnPropertyChanged(nameof(NumberOfWords));
         }
 
         private async void StartSearch()
         {
-            Results.Clear();
-            OnPropertyChanged(nameof(Results));
+            ResultsCollection.Clear();
+            OnPropertyChanged(nameof(ResultsCollection));
 
             SearchResult result =
                 await Task.Run(() => result = this.TrieManager.Search(this.Trie, this.SearchString));
 
-            result.ResultIds.ForEach(x => Results.Add(this.WordList[x]));
-            OnPropertyChanged(nameof(Results));
+            this.ResultsList = result.ResultIds;
+            if (this.DoRefreshResults)
+            {
+                this.ResultsList.ForEach(x => ResultsCollection.Add(this.WordList[x]));
+                OnPropertyChanged(nameof(ResultsCollection));
+            }
 
             this.searchTimes.Add(result.SearchTime);
             this.RefreshStatistics();

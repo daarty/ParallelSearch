@@ -20,6 +20,8 @@
         /// </summary>
         public App()
         {
+            this.AddLogger();
+
             // Prepare dependency injection for the MainWindow and its MainViewModel.
             var listCreator = new ListCreator();
             var trieManager = new TrieManager();

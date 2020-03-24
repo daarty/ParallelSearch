@@ -13,5 +13,13 @@
         /// <param name="wordLength">Number of characters in the words.</param>
         /// <returns>The result containing the word list and the duration.</returns>
         WordListResult CreateWordList(int wordLength);
+
+        /// <summary>
+        /// Creates a new list with permutated words with the defined word length, using the
+        /// multitasking ability of the system.
+        /// </summary>
+        /// <param name="wordLength">Number of characters in the words.</param>
+        /// <returns>The result containing the word list and the duration.</returns>
+        WordListResult CreateWordListParallel(int wordLength);
     }
 }
