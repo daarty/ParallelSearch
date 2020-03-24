@@ -1,6 +1,6 @@
 ﻿<log4net>
   <root>
-    <level value="ALL" />
+    <level value="Info" />
     <appender-ref ref="console" />
     <appender-ref ref="debug" />
     <appender-ref ref="file" />

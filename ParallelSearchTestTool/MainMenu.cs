@@ -15,6 +15,7 @@
         private const int DefaultInvalidNumberOfRuns = 0;
         private const int DefaultNumberOfCharacters = 4;
         private const int DefaultNumberOfRuns = 1000;
+        private const int NumberOfCharactersInConsoleLine = 120;
         private static readonly char[] charactersArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         private static readonly string[] NegativeInput = { "no", "n" };
@@ -173,14 +174,22 @@
             Logger.Info($"- the average result of '{numberOfRuns}' executions of the test");
             Logger.Info(string.Empty);
 
-            Logger.Debug("Creating the word list ...");
             var wordList = this.ListCreator.CreateWordList(numberOfCharacters);
 
             var creationTimes = new List<PreciseTimeSpan>();
             var searchTimes = new List<PreciseTimeSpan>();
 
+            var alreadyDrawnProgressDots = 0;
+
             for (int i = 0; i < numberOfRuns; i++)
             {
+                var numberOfProgressDotsToDraw = Math.Round(((double)NumberOfCharactersInConsoleLine / (double)numberOfRuns) * (double)i);
+                for (int dots = alreadyDrawnProgressDots; dots < numberOfProgressDotsToDraw; dots++)
+                {
+                    alreadyDrawnProgressDots++;
+                    Console.Write(".");
+                }
+
                 var creationResult = this.TrieManager.CreateTrie(trieAlgorithm, wordList);
                 creationTimes.Add(creationResult.CreationTime);
 
@@ -190,11 +199,11 @@
                 searchTimes.Add(searchResult.SearchTime);
             }
 
+            Console.WriteLine(string.Empty);
             Logger.Info(string.Empty);
-            Logger.Info("Finished benchmark.");
-            // TODO make logs nicer
-            Logger.Info($"The average time for the creation of the '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters is '{PreciseTimeSpan.Average(creationTimes)}'.");
-            Logger.Info($"The average time for searching for random words in the '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters is '{PreciseTimeSpan.Average(searchTimes)}'.");
+            Logger.Info($"Finished benchmark of '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters");
+            Logger.Info($" Average Trie Creation time: {PreciseTimeSpan.Average(creationTimes),10}");
+            Logger.Info($" Average Trie Search time:   {PreciseTimeSpan.Average(searchTimes),10}");
         }
     }
 }
