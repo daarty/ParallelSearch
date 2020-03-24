@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="log4netConfig.xml">
+    <Content Include="log4netConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   
 </Project>

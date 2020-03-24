@@ -24,6 +24,7 @@
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
         private TrieAlgorithm trieAlgorithm = TrieAlgorithm.Basic;
         private List<PreciseTimeSpan> trieCreationTimes = new List<PreciseTimeSpan>();
+        private List<PreciseTimeSpan> wordListCreationTimes = new List<PreciseTimeSpan>();
 
         /// <summary>
         /// Creates a new instance of <see cref="MainWindow"/>.
@@ -58,6 +59,11 @@
         public string DurationAverageSearch => PreciseTimeSpan.Average(searchTimes).ToString();
 
         /// <summary>
+        /// Gets the average duration of a search.
+        /// </summary>
+        public string DurationAverageWordList => PreciseTimeSpan.Average(wordListCreationTimes).ToString();
+
+        /// <summary>
         /// Gets the duration of the last trie creation.
         /// </summary>
         public string DurationLastCreation => trieCreationTimes.LastOrDefault()?.ToString();
@@ -66,6 +72,11 @@
         /// Gets the duration of the last search.
         /// </summary>
         public string DurationLastSearch => searchTimes.LastOrDefault()?.ToString();
+
+        /// <summary>
+        /// Gets the duration of the last trie creation.
+        /// </summary>
+        public string DurationLastWordList => wordListCreationTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
@@ -80,15 +91,17 @@
             get => numberOfCharacters.ToString();
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    this.numberOfCharacters = 0;
-                    OnPropertyChanged(nameof(NumberOfCharacters));
-                }
-                else if (int.TryParse(value, out int validValue))
+                int validValue = 0;
+                if (string.IsNullOrWhiteSpace(value) ||
+                    int.TryParse(value, out validValue))
                 {
                     this.numberOfCharacters = validValue;
                     OnPropertyChanged(nameof(NumberOfCharacters));
+
+                    this.wordListCreationTimes.Clear();
+                    this.trieCreationTimes.Clear();
+                    this.searchTimes.Clear();
+                    this.RefreshStatistics();
                 }
             }
         }
@@ -163,7 +176,9 @@
         public ObservableCollection<string> WordList { get; private set; } = new ObservableCollection<string>();
 
         private IListCreator ListCreator { get; }
+
         private ITrie<int> Trie { get; set; }
+
         private ITrieManager TrieManager { get; }
 
         protected void OnPropertyChanged(string name)
@@ -180,12 +195,15 @@
             OnPropertyChanged(nameof(IsTrieReady));
             OnPropertyChanged(nameof(Results));
 
-            var list = new List<string>();
-            await Task.Run(() => list = this.ListCreator.CreateWordList(this.numberOfCharacters));
+            WordListResult result =
+            await Task.Run(() => result = this.ListCreator.CreateWordList(this.numberOfCharacters));
 
-            list.ForEach(x => this.WordList.Add(x));
+            result.WordList.ForEach(x => this.WordList.Add(x));
             OnPropertyChanged(nameof(WordList));
             OnPropertyChanged(nameof(IsTrieReady));
+
+            this.wordListCreationTimes.Add(result.CreationTime);
+            this.RefreshStatistics();
 
             this.CreateTrie();
         }
@@ -207,8 +225,11 @@
             this.RefreshStatistics();
         }
 
+
         private void RefreshStatistics()
         {
+            OnPropertyChanged(nameof(DurationLastWordList));
+            OnPropertyChanged(nameof(DurationAverageWordList));
             OnPropertyChanged(nameof(DurationLastSearch));
             OnPropertyChanged(nameof(DurationAverageSearch));
             OnPropertyChanged(nameof(NumberOfSearches));

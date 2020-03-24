@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Text;
     using log4net;
+    using ParallelSearchLibrary.Result;
     using Timer;
 
     /// <summary>
@@ -18,13 +19,13 @@
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ListCreator));
 
         /// </inheritdoc>
-        public List<string> CreateWordList(int wordLength)
+        public WordListResult CreateWordList(int wordLength)
         {
             var wordList = new List<string>();
 
             if (wordLength == 0)
             {
-                return wordList;
+                return new WordListResult { WordList = wordList, CreationTime = new PreciseTimeSpan() };
             }
 
             Logger.Debug($"Creating Word List with wordLength '{wordLength}'...");
@@ -45,7 +46,7 @@
             timeSpan = timer.Stop();
             Logger.Debug($"Successfully permutated Word List with '{wordList.Count}' elements in '{timeSpan}'.");
 
-            return wordList;
+            return new WordListResult { WordList = wordList, CreationTime = timeSpan };
         }
 
         private void CreateWordListRecursive(int maxWordLength, List<string> currentWord, List<string> wordList)

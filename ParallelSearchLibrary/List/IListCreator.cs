@@ -1,6 +1,6 @@
 ﻿namespace ParallelSearchLibrary.List
 {
-    using System.Collections.Generic;
+    using ParallelSearchLibrary.Result;
 
     /// <summary>
     /// Interface with methods that help creating a word list.
@@ -11,7 +11,7 @@
         /// Creates a new list with permutated words with the defined word length.
         /// </summary>
         /// <param name="wordLength">Number of characters in the words.</param>
-        /// <returns>The list of <see cref="string"/> s.</returns>
-        List<string> CreateWordList(int wordLength);
+        /// <returns>The result containing the word list and the duration.</returns>
+        WordListResult CreateWordList(int wordLength);
     }
 }
