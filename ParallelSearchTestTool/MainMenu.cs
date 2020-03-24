@@ -193,15 +193,16 @@
             var searchTimes = new List<PreciseTimeSpan>();
 
             var alreadyDrawnProgressDots = 0;
+            this.TrieManager.TrieAlgorithm = trieAlgorithm;
 
             for (int i = 0; i < numberOfRuns; i++)
             {
-                var creationResult = this.TrieManager.CreateTrie(trieAlgorithm, wordListCreationResult.WordList);
+                var creationResult = this.TrieManager.CreateTrie(wordListCreationResult.WordList);
                 creationTimes.Add(creationResult.CreationTime);
 
                 var randomSearchWord = GetRandomSearchWord(numberOfCharacters);
 
-                var searchResult = this.TrieManager.Search(creationResult.Trie, randomSearchWord);
+                var searchResult = this.TrieManager.Search(randomSearchWord);
                 searchTimes.Add(searchResult.SearchTime);
 
                 // Draw progress line

@@ -21,7 +21,6 @@
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainViewModel));
 
-        private bool doRefreshResults;
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
@@ -52,16 +51,32 @@
 
         public bool DoParallelize { get; set; }
 
-        public bool DoRefreshResults
+        public bool DoRefreshResultsCollection
         {
-            get => doRefreshResults;
+            get => doRefreshResultsCollection;
             set
             {
-                if (doRefreshResults != value)
+                if (doRefreshResultsCollection != value)
                 {
-                    doRefreshResults = value;
-                    OnPropertyChanged(nameof(WordCollection));
+                    doRefreshResultsCollection = value;
                     OnPropertyChanged(nameof(ResultsCollection));
+                }
+            }
+        }
+
+        private bool doRefreshResultsCollection;
+
+        private bool doRefreshWordCollection;
+
+        public bool DoRefreshWordCollection
+        {
+            get => doRefreshWordCollection;
+            set
+            {
+                if (doRefreshWordCollection != value)
+                {
+                    doRefreshWordCollection = value;
+                    OnPropertyChanged(nameof(WordCollection));
                 }
             }
         }
@@ -135,6 +150,8 @@
         public string NumberOfSearches => this.searchTimes.Count.ToString();
 
         public string NumberOfWords => WordList?.Any() ?? false ? WordList.Count.ToString() : "-";
+
+        public string NumberOfResults => ResultsList?.Any() ?? false ? ResultsList.Count.ToString() : "-";
 
         /// <summary>
         /// Gets the current word list.
@@ -234,14 +251,14 @@
             }
 
             this.WordList = result.WordList;
+            OnPropertyChanged(nameof(NumberOfWords));
 
-            if (this.DoRefreshResults)
+            if (this.DoRefreshWordCollection)
             {
                 result.WordList.ForEach(x => this.WordCollection.Add(x));
                 OnPropertyChanged(nameof(WordCollection));
             }
             OnPropertyChanged(nameof(IsTrieReady));
-            OnPropertyChanged(nameof(NumberOfWords));
 
             this.wordListCreationTimes.Add(result.CreationTime);
             this.RefreshStatistics();
@@ -292,6 +309,7 @@
             OnPropertyChanged(nameof(DurationAverageCreation));
             OnPropertyChanged(nameof(NumberOfCreations));
             OnPropertyChanged(nameof(NumberOfWords));
+            OnPropertyChanged(nameof(NumberOfResults));
         }
 
         private async void StartSearch()
@@ -303,7 +321,9 @@
                 await Task.Run(() => result = this.TrieManager.Search(this.SearchString));
 
             this.ResultsList = result.ResultIds;
-            if (this.DoRefreshResults)
+            OnPropertyChanged(nameof(NumberOfResults));
+
+            if (this.DoRefreshResultsCollection)
             {
                 this.ResultsList.ForEach(x => ResultsCollection.Add(this.WordList[x]));
                 OnPropertyChanged(nameof(ResultsCollection));

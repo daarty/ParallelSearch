@@ -70,8 +70,8 @@
                    Text="{Binding NumberOfWords, FallbackValue=-}" />
         <CheckBox Grid.Row="4" Grid.ColumnSpan="2" Margin="8"
                   HorizontalAlignment="Right" VerticalAlignment="Center"
-                  IsChecked="{Binding DoRefreshResults}">
-            <TextBlock Margin="0" Text="Ergebnisse aktualisieren" />
+                  IsChecked="{Binding DoRefreshWordCollection}">
+            <TextBlock Margin="0" Text="Wortliste aktualisieren" />
         </CheckBox>
         <ListBox Grid.Row="5" Grid.RowSpan="6" Grid.ColumnSpan="2"
                  ItemsSource="{Binding WordCollection, Mode=OneWay, FallbackValue=ABC}" />
@@ -87,7 +87,20 @@
         <TextBlock Grid.Row="2" Grid.Column="2"
                    Style="{StaticResource TitleTextBlockStyle}"
                    Text="Suchergebnisse" />
-        <ListBox Grid.Row="3" Grid.Column="2" Grid.RowSpan="8"
+
+        <TextBlock Grid.Row="3" Grid.Column="2"
+                   Style="{StaticResource TitleTextBlockStyle}"
+                   Text="Anzahl der Wörter" />
+        <TextBlock Grid.Row="3" Grid.Column="2"
+                   HorizontalAlignment="Right"
+                   Text="{Binding NumberOfResults, FallbackValue=-}" />
+        <CheckBox Grid.Row="4" Grid.Column="2" Margin="8"
+                  HorizontalAlignment="Right" VerticalAlignment="Center"
+                  IsChecked="{Binding DoRefreshResultsCollection}">
+            <TextBlock Margin="0" Text="Suchergebnisse aktualisieren" />
+        </CheckBox>
+
+        <ListBox Grid.Row="5" Grid.Column="2" Grid.RowSpan="6"
                  ItemsSource="{Binding ResultsCollection, Mode=OneWay}" />
 
         <!--Trie Algorithm Selection-->
