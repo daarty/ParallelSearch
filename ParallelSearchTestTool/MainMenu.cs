@@ -14,8 +14,8 @@
         private const int DefaultInvalidNumberOfCharacters = 0;
         private const int DefaultInvalidNumberOfRuns = 0;
         private const int DefaultNumberOfCharacters = 4;
-        private const int DefaultNumberOfRuns = 1000;
-        private const int NumberOfCharactersInConsoleLine = 120;
+        private const int DefaultNumberOfRuns = 10;
+        private const double NumberOfCharactersInConsoleLine = 120;
         private static readonly char[] charactersArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         private static readonly string[] NegativeInput = { "no", "n" };
@@ -30,6 +30,16 @@
         private IListCreator ListCreator { get; }
 
         private ITrieManager TrieManager { get; }
+
+        public void RunAutomaticBenchmark()
+        {
+            Logger.Info(string.Empty);
+            Logger.Info($"Starting the automatic benchmark that tests all algorithms with the default values ...");
+            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Basic, DefaultNumberOfRuns);
+            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Concurrent, DefaultNumberOfRuns);
+            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Patricia, DefaultNumberOfRuns);
+            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Ukkonen, DefaultNumberOfRuns);
+        }
 
         public void StartManualMode()
         {
@@ -59,6 +69,7 @@
                         isValidInput = false;
                         while (!isValidInput)
                         {
+                            Logger.Info(string.Empty);
                             Logger.Info($"This is a high value and the computation might take very long. Are you sure? [y, n] (default: n)");
                             input = Console.ReadLine();
                             if (string.IsNullOrWhiteSpace(input) || NegativeInput.Contains(input))
@@ -183,13 +194,6 @@
 
             for (int i = 0; i < numberOfRuns; i++)
             {
-                var numberOfProgressDotsToDraw = Math.Round(((double)NumberOfCharactersInConsoleLine / (double)numberOfRuns) * (double)i);
-                for (int dots = alreadyDrawnProgressDots; dots < numberOfProgressDotsToDraw; dots++)
-                {
-                    alreadyDrawnProgressDots++;
-                    Console.Write(".");
-                }
-
                 var creationResult = this.TrieManager.CreateTrie(trieAlgorithm, wordList);
                 creationTimes.Add(creationResult.CreationTime);
 
@@ -197,13 +201,23 @@
 
                 var searchResult = this.TrieManager.Search(creationResult.Trie, randomSearchWord);
                 searchTimes.Add(searchResult.SearchTime);
+
+                // Draw progress line
+                var numberOfProgressDotsToDraw = Math.Round(NumberOfCharactersInConsoleLine / numberOfRuns * (i + 1));
+                for (int dots = alreadyDrawnProgressDots; dots < numberOfProgressDotsToDraw; dots++)
+                {
+                    Console.Write(".");
+                    alreadyDrawnProgressDots++;
+                }
             }
 
             Console.WriteLine(string.Empty);
             Logger.Info(string.Empty);
-            Logger.Info($"Finished benchmark of '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters");
+            Logger.Info($"Finished benchmark of '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters:");
             Logger.Info($" Average Trie Creation time: {PreciseTimeSpan.Average(creationTimes),10}");
             Logger.Info($" Average Trie Search time:   {PreciseTimeSpan.Average(searchTimes),10}");
+            Logger.Info(string.Empty);
+            Logger.Info("-----------------------------------------------------------------------------------------------------------------------");
         }
     }
 }

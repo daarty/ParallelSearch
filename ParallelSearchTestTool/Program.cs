@@ -11,16 +11,17 @@
 
     internal class Program
     {
+        private static readonly string[] AutomaticBenchmarkArguments = { "auto", "-a", "--auto", "benchmark", "-b", "--benchmark" };
         private static readonly string[] HelpArguments = { "help", "-h", "--help", "?", "/?", "/help", "man" };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
 
         public static void Main(string[] args)
         {
             AddLogger();
-
+            string firstArgument = string.Empty;
             if (args.Any())
             {
-                var firstArgument = args.FirstOrDefault() ?? string.Empty;
+                firstArgument = args.FirstOrDefault() ?? string.Empty;
                 if (HelpArguments.Contains(firstArgument, StringComparer.OrdinalIgnoreCase))
                 {
                     PrintHelp();
@@ -34,7 +35,16 @@
             var trieManager = new TrieManager();
             var listCreator = new ListCreator();
             var mainMenu = new MainMenu(listCreator, trieManager);
-            mainMenu.StartManualMode();
+
+            if (AutomaticBenchmarkArguments.Contains(firstArgument, StringComparer.OrdinalIgnoreCase))
+            {
+                mainMenu.RunAutomaticBenchmark();
+                return;
+            }
+            else
+            {
+                mainMenu.StartManualMode();
+            }
         }
 
         private static void AddLogger()
@@ -66,11 +76,6 @@
             Logger.Info(" * '' ........... no arguments for manual mode");
             Logger.Info(" * 'help' ................. displays this help");
             Logger.Info(" * 'benchmark' ... runs an automatic benchmark");
-        }
-
-        private static void WriteLine(string v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
