@@ -183,7 +183,7 @@
             for (int i = 0; i < numberOfRuns; i++)
             {
                 var creationResult = this.TrieManager.CreateTrie(wordListCreationResult.WordList);
-                creationTimes.Add(creationResult.CreationTime);
+                creationTimes.Add(creationResult);
 
                 var randomSearchWord = this.WordCreator.GetRandomWord(numberOfCharacters);
 

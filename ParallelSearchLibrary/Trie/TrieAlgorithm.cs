@@ -2,11 +2,11 @@
 {
     public enum TrieAlgorithm
     {
+        MyTrie,
+        MyParallelTrie,
         Basic,
         Concurrent,
         Patricia,
-        Ukkonen,
-        OwnImplementationLinear,
-        OwnImplementationParallel
+        Ukkonen
     }
 }

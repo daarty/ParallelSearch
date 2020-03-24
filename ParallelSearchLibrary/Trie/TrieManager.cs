@@ -4,40 +4,49 @@
     using System.Linq;
     using Gma.DataStructures.StringSearch;
     using log4net;
-    using ParallelSearchLibrary.Result;
+    using Result;
     using Timer;
 
     public class TrieManager : ITrieManager
     {
         public ITrie<int> Trie { get; set; }
+        public IMyTrie MyTrie { get; set; }
 
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
 
-        public TrieCreationResult CreateTrie(List<string> wordList)
+        public PreciseTimeSpan CreateTrie(List<string> wordList)
         {
             Logger.Debug($"Building the '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements...");
             var timer = new PreciseTimer();
+            PreciseTimeSpan timeSpan;
             timer.Start();
-
-            ITrie<int> trie;
 
             switch (this.TrieAlgorithm)
             {
                 case TrieAlgorithm.Basic:
-                    trie = new Trie<int>();
+                    this.Trie = new Trie<int>();
                     break;
 
                 case TrieAlgorithm.Concurrent:
-                    trie = new ConcurrentTrie<int>();
+                    this.Trie = new ConcurrentTrie<int>();
                     break;
 
                 case TrieAlgorithm.Patricia:
-                    trie = new PatriciaTrie<int>();
+                    this.Trie = new PatriciaTrie<int>();
                     break;
 
                 case TrieAlgorithm.Ukkonen:
-                    trie = new UkkonenTrie<int>();
+                    this.Trie = new UkkonenTrie<int>();
                     break;
+
+                case TrieAlgorithm.MyTrie:
+                case TrieAlgorithm.MyParallelTrie:
+                    this.MyTrie = new MyTrie(wordList);
+
+                    timeSpan = timer.Stop();
+                    Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
+
+                    return timeSpan;
 
                 default:
                     Logger.Warn($"Unknown Trie Algorithm '{this.TrieAlgorithm}'. Returning null.");
@@ -46,24 +55,16 @@
 
             for (int i = 0; i < wordList.Count; i++)
             {
-                trie.Add(wordList[i], i);
+                this.Trie.Add(wordList[i], i);
             }
 
-            var timeSpan = timer.Stop();
+            timeSpan = timer.Stop();
             Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
 
-            this.Trie = trie;
-
-            return new TrieCreationResult { Trie = trie, CreationTime = timeSpan };
+            return timeSpan;
         }
 
         public TrieAlgorithm TrieAlgorithm { get; set; } = TrieAlgorithm.Basic;
-
-        public TrieCreationResult CreateTrieParallel(List<string> wordList)
-        {
-            // TODO implement parallelism
-            return CreateTrie(wordList);
-        }
 
         public SearchResult Search(string searchWord)
         {
