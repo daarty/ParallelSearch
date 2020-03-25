@@ -1,4 +1,4 @@
-﻿namespace ParallelSearchLibrary.Trie
+﻿namespace ParallelSearchLibrary.MyTrie
 {
     using System.Collections.Generic;
 

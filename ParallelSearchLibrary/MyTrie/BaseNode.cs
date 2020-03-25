@@ -1,46 +1,16 @@
-﻿namespace ParallelSearchLibrary.Trie
+﻿namespace ParallelSearchLibrary.MyTrie
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public class Node
+    public class BaseNode
     {
-        // TODO don't need this, if base node and root node exist
-        public Node()
-        {
-        }
-
-        public Node(char[] word)
-        {
-            this.CheckWord(word);
-
-            this.Character = word[0];
-            if (word.Length == 1)
-            {
-                return;
-            }
-
-            this.Children.Add(new Node(word.Skip(1).ToArray()));
-        }
-
-        public char Character { get; }
         public List<Node> Children { get; } = new List<Node>();
 
         public void Add(char[] word)
         {
             this.CheckWord(word);
-
-            // TODO base node needs pure .Add( new Node(word)) TODO "normal" node needs
-            // this.Character = word[0];
-
-            // TODO
-            /*
-            if (word.Length == 1)
-            {
-                return;
-            }
-            */
 
             var existingChild = Children.FirstOrDefault(child => child.Character == word[0]);
             if (existingChild != null)
@@ -49,13 +19,13 @@
             }
             else
             {
-                this.Children.Add(new Node(word.Skip(1).ToArray()));
+                this.Children.Add(new Node(word));
             }
         }
 
         public void Search(char[] word, string resultWord, List<string> result)
         {
-            this.CheckWord(word);
+            if (word == null) throw new ArgumentNullException($"The '{nameof(word)}' is null.");
             if (resultWord == null) throw new ArgumentNullException($"The '{nameof(resultWord)}' is null.");
 
             if (word.Any())
@@ -72,13 +42,27 @@
             }
             else if (!string.IsNullOrEmpty(resultWord))
             {
-                result.Add(resultWord);
+                this.GetAllWords(resultWord, result);
             }
         }
 
-        private void CheckWord(char[] word)
+        protected void CheckWord(char[] word)
         {
             if (word == null || !word.Any()) throw new ArgumentException($"The '{nameof(word)}' char array is null or empty.");
+        }
+
+        protected void GetAllWords(string resultWord, List<string> result)
+        {
+            if (!this.Children.Any())
+            {
+                result.Add(resultWord);
+                return;
+            }
+
+            foreach (var child in this.Children)
+            {
+                child.GetAllWords(resultWord + child.Character, result);
+            }
         }
     }
 }

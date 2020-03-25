@@ -4,15 +4,16 @@
     using System.Linq;
     using Gma.DataStructures.StringSearch;
     using log4net;
+    using MyTrie;
     using Result;
     using Timer;
 
     public class TrieManager : ITrieManager
     {
-        public ITrie<int> Trie { get; set; }
-        public IMyTrie MyTrie { get; set; }
-
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
+        public IMyTrie MyTrie { get; set; }
+        public ITrie<int> Trie { get; set; }
+        public TrieAlgorithm TrieAlgorithm { get; set; } = TrieAlgorithm.MyTrie;
 
         public PreciseTimeSpan CreateTrie(List<string> wordList)
         {
@@ -64,19 +65,28 @@
             return timeSpan;
         }
 
-        public TrieAlgorithm TrieAlgorithm { get; set; } = TrieAlgorithm.Basic;
-
-        public SearchResult Search(string searchWord)
+        public SearchResult Search(string searchWord, List<string> wordList)
         {
+            var results = new List<string>();
             var timer = new PreciseTimer();
             timer.Start();
 
-            var results = this.Trie.Retrieve(searchWord);
+            switch (this.TrieAlgorithm)
+            {
+                case TrieAlgorithm.MyTrie:
+                case TrieAlgorithm.MyParallelTrie:
+                    results = this.MyTrie.Search(searchWord);
+                    break;
+
+                default:
+                    this.Trie.Retrieve(searchWord).ToList().ForEach(x => results.Add(wordList[x]));
+                    break;
+            }
 
             var timeSpan = timer.Stop();
             Logger.Debug($"Successfully found Trie with '{results.Count()}' results in '{timeSpan}'.");
 
-            return new SearchResult { ResultIds = results.ToList(), SearchTime = timeSpan };
+            return new SearchResult { ResultList = results, SearchTime = timeSpan };
         }
     }
 }

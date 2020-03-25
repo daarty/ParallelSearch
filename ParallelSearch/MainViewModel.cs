@@ -21,6 +21,9 @@
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainViewModel));
 
+        private bool doRefreshResultsCollection;
+        private bool doRefreshWordCollection;
+        private bool isTrieReady;
         private int numberOfCharacters = 4;
         private string searchString = string.Empty;
         private List<PreciseTimeSpan> searchTimes = new List<PreciseTimeSpan>();
@@ -64,10 +67,6 @@
             }
         }
 
-        private bool doRefreshResultsCollection;
-
-        private bool doRefreshWordCollection;
-
         public bool DoRefreshWordCollection
         {
             get => doRefreshWordCollection;
@@ -110,8 +109,6 @@
         /// Gets the duration of the last trie creation.
         /// </summary>
         public string DurationLastWordList => wordListCreationTimes.LastOrDefault()?.ToString();
-
-        private bool isTrieReady;
 
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
@@ -157,14 +154,14 @@
         /// </summary>
         public string NumberOfCreations => this.trieCreationTimes.Count.ToString();
 
+        public string NumberOfResults => ResultsList?.Any() ?? false ? ResultsList.Count.ToString() : "-";
+
         /// <summary>
         /// Gets the number of the search processes.
         /// </summary>
         public string NumberOfSearches => this.searchTimes.Count.ToString();
 
         public string NumberOfWords => WordList?.Any() ?? false ? WordList.Count.ToString() : "-";
-
-        public string NumberOfResults => ResultsList?.Any() ?? false ? ResultsList.Count.ToString() : "-";
 
         /// <summary>
         /// Gets the current word list.
@@ -226,7 +223,7 @@
         public ObservableCollection<string> WordCollection { get; private set; } = new ObservableCollection<string>();
 
         private IWordCreator ListCreator { get; }
-        private List<int> ResultsList { get; set; } = new List<int>();
+        private List<string> ResultsList { get; set; } = new List<string>();
         private ITrieManager TrieManager { get; }
         private List<string> WordList { get; set; } = new List<string>();
 
@@ -326,14 +323,14 @@
             OnPropertyChanged(nameof(ResultsCollection));
 
             SearchResult result =
-                await Task.Run(() => result = this.TrieManager.Search(this.SearchString));
+                await Task.Run(() => result = this.TrieManager.Search(this.SearchString, this.WordList));
 
-            this.ResultsList = result.ResultIds;
+            this.ResultsList = result.ResultList;
             OnPropertyChanged(nameof(NumberOfResults));
 
             if (this.DoRefreshResultsCollection)
             {
-                this.ResultsList.ForEach(x => ResultsCollection.Add(this.WordList[x]));
+                this.ResultsList.ForEach(x => ResultsCollection.Add(x));
                 OnPropertyChanged(nameof(ResultsCollection));
             }
 

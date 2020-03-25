@@ -7,11 +7,11 @@
 
     public interface ITrieManager
     {
-        TrieAlgorithm TrieAlgorithm { get; set; }
         ITrie<int> Trie { get; set; }
+        TrieAlgorithm TrieAlgorithm { get; set; }
 
         PreciseTimeSpan CreateTrie(List<string> wordList);
 
-        SearchResult Search(string searchWord);
+        SearchResult Search(string searchWord, List<string> wordList);
     }
 }

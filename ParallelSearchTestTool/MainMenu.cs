@@ -27,9 +27,8 @@
             this.TrieManager = trieManager;
         }
 
-        private IWordCreator WordCreator { get; }
-
         private ITrieManager TrieManager { get; }
+        private IWordCreator WordCreator { get; }
 
         public void RunAutomaticBenchmark()
         {
@@ -187,7 +186,7 @@
 
                 var randomSearchWord = this.WordCreator.GetRandomWord(numberOfCharacters);
 
-                var searchResult = this.TrieManager.Search(randomSearchWord);
+                var searchResult = this.TrieManager.Search(randomSearchWord, wordListCreationResult.WordList);
                 searchTimes.Add(searchResult.SearchTime);
 
                 // Draw progress line

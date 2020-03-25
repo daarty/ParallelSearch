@@ -5,7 +5,7 @@
 
     public class SearchResult
     {
-        public List<int> ResultIds { get; set; }
+        public List<string> ResultList { get; set; }
         public PreciseTimeSpan SearchTime { get; set; }
     }
 }
