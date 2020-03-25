@@ -14,7 +14,7 @@
         public MainWindow(MainViewModel viewModel)
         {
             this.DataContext = viewModel;
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

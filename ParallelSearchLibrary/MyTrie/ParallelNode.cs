@@ -5,29 +5,45 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Implementation of a node in the MyParallelTrie implementation.
+    /// </summary>
     public class ParallelNode
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="ParallelNode"/>.
+        /// </summary>
+        /// <remarks>This basic constructor is needed for the root element.</remarks>
         public ParallelNode()
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="ParallelNode"/>.
+        /// </summary>
+        /// <param name="word">Word to be added to the node.</param>
         public ParallelNode(char[] word)
         {
-            if (word == null) throw new ArgumentNullException($"The '{nameof(word)}' is null.");
+            if (word == null) throw new ArgumentNullException(nameof(word));
 
             if (!word.Any())
             {
                 return;
             }
 
-            if (!this.Children.TryAdd(word[0], new ParallelNode(word.Skip(1).ToArray())))
-            {
-                throw new NotImplementedException();
-            }
+            this.Children.GetOrAdd(word[0], new ParallelNode(word.Skip(1).ToArray()));
         }
 
+        /// <summary>
+        /// Gets the concurrent dictionary containing the children nodes.
+        /// </summary>
         public ConcurrentDictionary<char, ParallelNode> Children { get; } = new ConcurrentDictionary<char, ParallelNode>();
 
+        /// <summary>
+        /// Adds the given word to this node and its children.
+        /// </summary>
+        /// <param name="word">Word to be added to the node.</param>
+        /// <exception cref="ArgumentException">If the word is null or empty.</exception>
         public void Add(char[] word)
         {
             this.CheckWord(word);
@@ -45,10 +61,20 @@
             }
         }
 
+        /// <summary>
+        /// Searches for the given word whithin this node and its sub-tree.
+        /// </summary>
+        /// <param name="word">Word to be searched for.</param>
+        /// <param name="resultWord">
+        /// The currently built result sub-word that will be added to the results.
+        /// </param>
+        /// <param name="result">Concurrent set of all results.</param>
+        /// <exception cref="ArgumentNullException">If any argument is null.</exception>
         public void Search(char[] word, string resultWord, ConcurrentBag<string> result)
         {
-            if (word == null) throw new ArgumentNullException($"The '{nameof(word)}' is null.");
-            if (resultWord == null) throw new ArgumentNullException($"The '{nameof(resultWord)}' is null.");
+            if (word == null) throw new ArgumentNullException(nameof(word));
+            if (resultWord == null) throw new ArgumentNullException(nameof(resultWord));
+            if (result == null) throw new ArgumentNullException(nameof(result));
 
             if (word.Any())
             {

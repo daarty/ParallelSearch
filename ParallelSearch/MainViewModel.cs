@@ -39,7 +39,7 @@
         {
             this.ListCreator = wordCreator;
             this.TrieManager = trieManager;
-            CreateListCommand = new DelegateCommand(CreateListCallback);
+            this.CreateListCommand = new DelegateCommand(this.CreateListCallback);
         }
 
         /// <summary>
@@ -56,26 +56,26 @@
 
         public bool DoRefreshResultsCollection
         {
-            get => doRefreshResultsCollection;
+            get => this.doRefreshResultsCollection;
             set
             {
-                if (doRefreshResultsCollection != value)
+                if (this.doRefreshResultsCollection != value)
                 {
-                    doRefreshResultsCollection = value;
-                    OnPropertyChanged(nameof(ResultsCollection));
+                    this.doRefreshResultsCollection = value;
+                    this.OnPropertyChanged(nameof(this.ResultsCollection));
                 }
             }
         }
 
         public bool DoRefreshWordCollection
         {
-            get => doRefreshWordCollection;
+            get => this.doRefreshWordCollection;
             set
             {
-                if (doRefreshWordCollection != value)
+                if (this.doRefreshWordCollection != value)
                 {
-                    doRefreshWordCollection = value;
-                    OnPropertyChanged(nameof(WordCollection));
+                    this.doRefreshWordCollection = value;
+                    this.OnPropertyChanged(nameof(this.WordCollection));
                 }
             }
         }
@@ -83,45 +83,45 @@
         /// <summary>
         /// Gets the average duration of a trie creation.
         /// </summary>
-        public string DurationAverageCreation => PreciseTimeSpan.Average(trieCreationTimes).ToString();
+        public string DurationAverageCreation => PreciseTimeSpan.Average(this.trieCreationTimes).ToString();
 
         /// <summary>
         /// Gets the average duration of a search.
         /// </summary>
-        public string DurationAverageSearch => PreciseTimeSpan.Average(searchTimes).ToString();
+        public string DurationAverageSearch => PreciseTimeSpan.Average(this.searchTimes).ToString();
 
         /// <summary>
         /// Gets the average duration of a search.
         /// </summary>
-        public string DurationAverageWordList => PreciseTimeSpan.Average(wordListCreationTimes).ToString();
+        public string DurationAverageWordList => PreciseTimeSpan.Average(this.wordListCreationTimes).ToString();
 
         /// <summary>
         /// Gets the duration of the last trie creation.
         /// </summary>
-        public string DurationLastCreation => trieCreationTimes.LastOrDefault()?.ToString();
+        public string DurationLastCreation => this.trieCreationTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets the duration of the last search.
         /// </summary>
-        public string DurationLastSearch => searchTimes.LastOrDefault()?.ToString();
+        public string DurationLastSearch => this.searchTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets the duration of the last trie creation.
         /// </summary>
-        public string DurationLastWordList => wordListCreationTimes.LastOrDefault()?.ToString();
+        public string DurationLastWordList => this.wordListCreationTimes.LastOrDefault()?.ToString();
 
         /// <summary>
         /// Gets a value indicating whether the word list contains any words.
         /// </summary>
         public bool IsTrieReady
         {
-            get => isTrieReady;
+            get => this.isTrieReady;
             set
             {
-                if (isTrieReady != value)
+                if (this.isTrieReady != value)
                 {
-                    isTrieReady = value;
-                    OnPropertyChanged(nameof(IsTrieReady));
+                    this.isTrieReady = value;
+                    this.OnPropertyChanged(nameof(this.IsTrieReady));
                 }
             }
         }
@@ -131,7 +131,7 @@
         /// </summary>
         public string NumberOfCharacters
         {
-            get => numberOfCharacters.ToString();
+            get => this.numberOfCharacters.ToString();
             set
             {
                 int validValue = 0;
@@ -139,7 +139,7 @@
                     int.TryParse(value, out validValue))
                 {
                     this.numberOfCharacters = validValue;
-                    OnPropertyChanged(nameof(NumberOfCharacters));
+                    this.OnPropertyChanged(nameof(this.NumberOfCharacters));
 
                     this.wordListCreationTimes.Clear();
                     this.trieCreationTimes.Clear();
@@ -154,14 +154,14 @@
         /// </summary>
         public string NumberOfCreations => this.trieCreationTimes.Count.ToString();
 
-        public string NumberOfResults => ResultsList?.Any() ?? false ? ResultsList.Count.ToString() : "-";
+        public string NumberOfResults => this.ResultsList?.Any() ?? false ? this.ResultsList.Count.ToString() : "-";
 
         /// <summary>
         /// Gets the number of the search processes.
         /// </summary>
         public string NumberOfSearches => this.searchTimes.Count.ToString();
 
-        public string NumberOfWords => WordList?.Any() ?? false ? WordList.Count.ToString() : "-";
+        public string NumberOfWords => this.WordList?.Any() ?? false ? this.WordList.Count.ToString() : "-";
 
         /// <summary>
         /// Gets the current word list.
@@ -173,7 +173,7 @@
         /// </summary>
         public string SearchString
         {
-            get => searchString;
+            get => this.searchString;
             set
             {
                 if (value == null)
@@ -181,12 +181,12 @@
                     return;
                 }
 
-                if (!string.Equals(searchString, value, StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(this.searchString, value, StringComparison.OrdinalIgnoreCase))
                 {
-                    searchString = value.ToUpper();
-                    OnPropertyChanged(nameof(SearchString));
+                    this.searchString = value.ToUpper();
+                    this.OnPropertyChanged(nameof(this.SearchString));
 
-                    StartSearch();
+                    this.StartSearch();
                 }
             }
         }
@@ -202,7 +202,7 @@
                 if (this.TrieManager.TrieAlgorithm != value)
                 {
                     this.TrieManager.TrieAlgorithm = value;
-                    this.OnPropertyChanged(nameof(TrieAlgorithm));
+                    this.OnPropertyChanged(nameof(this.TrieAlgorithm));
 
                     this.trieCreationTimes.Clear();
                     this.searchTimes.Clear();
@@ -238,11 +238,11 @@
             this.WordList.Clear();
             this.ResultsCollection.Clear();
             this.ResultsList.Clear();
-            OnPropertyChanged(nameof(WordCollection));
-            IsTrieReady = false;
-            OnPropertyChanged(nameof(ResultsCollection));
-            OnPropertyChanged(nameof(NumberOfWords));
-            OnPropertyChanged(nameof(NumberOfResults));
+            this.OnPropertyChanged(nameof(this.WordCollection));
+            this.IsTrieReady = false;
+            this.OnPropertyChanged(nameof(this.ResultsCollection));
+            this.OnPropertyChanged(nameof(this.NumberOfWords));
+            this.OnPropertyChanged(nameof(this.NumberOfResults));
 
             WordListResult result = null;
             await Task.Run(() =>
@@ -264,14 +264,14 @@
             }
 
             this.WordList = result.WordList;
-            OnPropertyChanged(nameof(NumberOfWords));
+            this.OnPropertyChanged(nameof(this.NumberOfWords));
 
             if (this.DoRefreshWordCollection)
             {
                 result.WordList.ForEach(x => this.WordCollection.Add(x));
-                OnPropertyChanged(nameof(WordCollection));
+                this.OnPropertyChanged(nameof(this.WordCollection));
             }
-            IsTrieReady = true;
+            this.IsTrieReady = true;
 
             this.wordListCreationTimes.Add(result.CreationTime);
             this.RefreshStatistics();
@@ -283,9 +283,9 @@
         {
             this.ResultsCollection.Clear();
             this.ResultsList.Clear();
-            IsTrieReady = false;
-            OnPropertyChanged(nameof(ResultsCollection));
-            OnPropertyChanged(nameof(NumberOfResults));
+            this.IsTrieReady = false;
+            this.OnPropertyChanged(nameof(this.ResultsCollection));
+            this.OnPropertyChanged(nameof(this.NumberOfResults));
 
             if (!this.WordList.Any())
             {
@@ -301,7 +301,7 @@
                 return;
             }
 
-            IsTrieReady = true;
+            this.IsTrieReady = true;
 
             this.trieCreationTimes.Add(trieCreationDuration);
             this.RefreshStatistics();
@@ -309,35 +309,35 @@
 
         private void RefreshStatistics()
         {
-            OnPropertyChanged(nameof(DurationLastWordList));
-            OnPropertyChanged(nameof(DurationAverageWordList));
-            OnPropertyChanged(nameof(DurationLastSearch));
-            OnPropertyChanged(nameof(DurationAverageSearch));
-            OnPropertyChanged(nameof(NumberOfSearches));
-            OnPropertyChanged(nameof(DurationLastCreation));
-            OnPropertyChanged(nameof(DurationAverageCreation));
-            OnPropertyChanged(nameof(NumberOfCreations));
-            OnPropertyChanged(nameof(NumberOfWords));
-            OnPropertyChanged(nameof(NumberOfResults));
+            this.OnPropertyChanged(nameof(this.DurationLastWordList));
+            this.OnPropertyChanged(nameof(this.DurationAverageWordList));
+            this.OnPropertyChanged(nameof(this.DurationLastSearch));
+            this.OnPropertyChanged(nameof(this.DurationAverageSearch));
+            this.OnPropertyChanged(nameof(this.NumberOfSearches));
+            this.OnPropertyChanged(nameof(this.DurationLastCreation));
+            this.OnPropertyChanged(nameof(this.DurationAverageCreation));
+            this.OnPropertyChanged(nameof(this.NumberOfCreations));
+            this.OnPropertyChanged(nameof(this.NumberOfWords));
+            this.OnPropertyChanged(nameof(this.NumberOfResults));
         }
 
         private async void StartSearch()
         {
-            ResultsCollection.Clear();
-            ResultsList.Clear();
-            OnPropertyChanged(nameof(NumberOfResults));
-            OnPropertyChanged(nameof(ResultsCollection));
+            this.ResultsCollection.Clear();
+            this.ResultsList.Clear();
+            this.OnPropertyChanged(nameof(this.NumberOfResults));
+            this.OnPropertyChanged(nameof(this.ResultsCollection));
 
             SearchResult result =
                 await Task.Run(() => result = this.TrieManager.Search(this.SearchString, this.WordList));
 
             this.ResultsList = result.ResultList;
-            OnPropertyChanged(nameof(NumberOfResults));
+            this.OnPropertyChanged(nameof(this.NumberOfResults));
 
             if (this.DoRefreshResultsCollection)
             {
-                this.ResultsList.ForEach(x => ResultsCollection.Add(x));
-                OnPropertyChanged(nameof(ResultsCollection));
+                this.ResultsList.ForEach(x => this.ResultsCollection.Add(x));
+                this.OnPropertyChanged(nameof(this.ResultsCollection));
             }
 
             this.searchTimes.Add(result.SearchTime);

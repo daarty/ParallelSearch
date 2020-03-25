@@ -8,13 +8,29 @@
     using Result;
     using Timer;
 
+    /// <summary>
+    /// Implements the <see cref="ITrieManager"/> interface.
+    /// </summary>
     public class TrieManager : ITrieManager
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(TrieManager));
+
+        /// <summary>
+        /// Gets the active <see cref="IMyTrie"/>.
+        /// </summary>
         public IMyTrie MyTrie { get; set; }
+
+        /// <summary>
+        /// Gets the active <see cref="ITrie"/> from Trie.Net.
+        /// </summary>
         public ITrie<int> Trie { get; set; }
+
+        /// <summary>
+        /// Gets the selected Trie algorithm.
+        /// </summary>
         public TrieAlgorithm TrieAlgorithm { get; set; } = TrieAlgorithm.MyTrie;
 
+        /// </inheritdoc>
         public PreciseTimeSpan CreateTrie(List<string> wordList)
         {
             Logger.Debug($"Building the '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements...");
@@ -72,6 +88,7 @@
             return timeSpan;
         }
 
+        /// </inheritdoc>
         public SearchResult Search(string searchWord, List<string> wordList)
         {
             var results = new List<string>();
