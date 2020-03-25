@@ -52,8 +52,14 @@
         /// </summary>
         public ICommand CreateListCommand { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the word list creation should be parallelized.
+        /// </summary>
         public bool DoParallelize { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether result collection should be refreshed.
+        /// </summary>
         public bool DoRefreshResultsCollection
         {
             get => this.doRefreshResultsCollection;
@@ -67,6 +73,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether word list collection should be refreshed.
+        /// </summary>
         public bool DoRefreshWordCollection
         {
             get => this.doRefreshWordCollection;
@@ -154,6 +163,9 @@
         /// </summary>
         public string NumberOfCreations => this.trieCreationTimes.Count.ToString();
 
+        /// <summary>
+        /// Gets the number of the word search results.
+        /// </summary>
         public string NumberOfResults => this.ResultsList?.Any() ?? false ? this.ResultsList.Count.ToString() : "-";
 
         /// <summary>
@@ -161,6 +173,9 @@
         /// </summary>
         public string NumberOfSearches => this.searchTimes.Count.ToString();
 
+        /// <summary>
+        /// Gets the number of created words .
+        /// </summary>
         public string NumberOfWords => this.WordList?.Any() ?? false ? this.WordList.Count.ToString() : "-";
 
         /// <summary>
