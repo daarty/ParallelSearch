@@ -24,6 +24,22 @@
 
             switch (this.TrieAlgorithm)
             {
+                case TrieAlgorithm.MyTrie:
+                    this.MyTrie = new MyTrie(wordList);
+
+                    timeSpan = timer.Stop();
+                    Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
+
+                    return timeSpan;
+
+                case TrieAlgorithm.MyParallelTrie:
+                    this.MyTrie = new MyParallelTrie(wordList);
+
+                    timeSpan = timer.Stop();
+                    Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
+
+                    return timeSpan;
+
                 case TrieAlgorithm.Basic:
                     this.Trie = new Trie<int>();
                     break;
@@ -39,15 +55,6 @@
                 case TrieAlgorithm.Ukkonen:
                     this.Trie = new UkkonenTrie<int>();
                     break;
-
-                case TrieAlgorithm.MyTrie:
-                case TrieAlgorithm.MyParallelTrie:
-                    this.MyTrie = new MyTrie(wordList);
-
-                    timeSpan = timer.Stop();
-                    Logger.Debug($"Successfully built '{this.TrieAlgorithm}' Trie with '{wordList.Count}' elements in '{timeSpan}'.");
-
-                    return timeSpan;
 
                 default:
                     Logger.Warn($"Unknown Trie Algorithm '{this.TrieAlgorithm}'. Returning null.");

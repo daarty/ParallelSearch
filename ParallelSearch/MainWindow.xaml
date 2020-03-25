@@ -50,7 +50,7 @@
         <CheckBox Grid.Row="1" Grid.ColumnSpan="2" Margin="8"
                   HorizontalAlignment="Right" VerticalAlignment="Center"
                   IsChecked="{Binding DoParallelize}">
-            <TextBlock Margin="0"  Text="Parallelisieren" />
+            <TextBlock Margin="0" Text="Parallelisieren" />
         </CheckBox>
 
         <!--Number of Characters-->

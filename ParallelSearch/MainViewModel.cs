@@ -52,7 +52,7 @@
         /// </summary>
         public ICommand CreateListCommand { get; }
 
-        public bool DoParallelize { get; set; }
+        public bool DoParallelize { get; set; } = true;
 
         public bool DoRefreshResultsCollection
         {
@@ -235,11 +235,14 @@
         private async void CreateListCallback()
         {
             this.WordCollection.Clear();
+            this.WordList.Clear();
             this.ResultsCollection.Clear();
-            //this.TrieManager.Trie = null;
+            this.ResultsList.Clear();
             OnPropertyChanged(nameof(WordCollection));
             IsTrieReady = false;
             OnPropertyChanged(nameof(ResultsCollection));
+            OnPropertyChanged(nameof(NumberOfWords));
+            OnPropertyChanged(nameof(NumberOfResults));
 
             WordListResult result = null;
             await Task.Run(() =>
@@ -279,9 +282,10 @@
         private async void CreateTrie()
         {
             this.ResultsCollection.Clear();
-            //this.TrieManager.Trie = null;
+            this.ResultsList.Clear();
             IsTrieReady = false;
             OnPropertyChanged(nameof(ResultsCollection));
+            OnPropertyChanged(nameof(NumberOfResults));
 
             if (!this.WordList.Any())
             {
@@ -320,6 +324,8 @@
         private async void StartSearch()
         {
             ResultsCollection.Clear();
+            ResultsList.Clear();
+            OnPropertyChanged(nameof(NumberOfResults));
             OnPropertyChanged(nameof(ResultsCollection));
 
             SearchResult result =

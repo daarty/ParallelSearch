@@ -9,7 +9,7 @@
             this.Create(wordList);
         }
 
-        public RootNode RootNode { get; } = new RootNode();
+        public BaseNode RootNode { get; } = new BaseNode();
 
         public void Create(List<string> wordList)
         {

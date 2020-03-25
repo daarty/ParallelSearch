@@ -16,7 +16,6 @@
         private const int DefaultNumberOfCharacters = 4;
         private const int DefaultNumberOfRuns = 10;
         private const double NumberOfCharactersInConsoleLine = 120;
-        private static readonly char[] CharactersArray = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         private static readonly string[] NegativeInput = { "no", "n" };
         private static readonly string[] PositiveInput = { "yes", "y" };
@@ -34,10 +33,11 @@
         {
             Logger.Info(string.Empty);
             Logger.Info($"Starting the automatic benchmark that tests all algorithms with the default values ...");
-            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Basic, DefaultNumberOfRuns);
-            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Concurrent, DefaultNumberOfRuns);
-            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Patricia, DefaultNumberOfRuns);
-            RunBenchmark(DefaultNumberOfCharacters, TrieAlgorithm.Ukkonen, DefaultNumberOfRuns);
+
+            foreach (TrieAlgorithm algorithm in Enum.GetValues(typeof(TrieAlgorithm)))
+            {
+                RunBenchmark(DefaultNumberOfCharacters, algorithm, DefaultNumberOfRuns);
+            }
         }
 
         public void StartManualMode()
@@ -119,7 +119,7 @@
 
         private TrieAlgorithm GetTrieAlgorithm()
         {
-            var selectedAlgorithm = TrieAlgorithm.Basic;
+            var selectedAlgorithm = TrieAlgorithm.MyParallelTrie;
 
             var isValidInput = false;
             while (!isValidInput)
@@ -128,7 +128,7 @@
                 Logger.Info($"What algorithm should be used? (default: {(int)selectedAlgorithm} - {selectedAlgorithm})");
                 foreach (var algorithm in Enum.GetValues(typeof(TrieAlgorithm)))
                 {
-                    Logger.Info($" -{(int)algorithm,2} {algorithm,12}");
+                    Logger.Info($" -{(int)algorithm,2} {algorithm,20}");
                 }
 
                 var input = Console.ReadLine();
@@ -164,15 +164,12 @@
         private void RunBenchmark(int numberOfCharacters, TrieAlgorithm trieAlgorithm, int numberOfRuns)
         {
             Logger.Info(string.Empty);
-            Logger.Info("Start running benchmark with:");
-            Logger.Info($"- a word list of words with '{numberOfCharacters}' characters");
-            Logger.Info($"- a trie with the '{trieAlgorithm}' algorithm");
-            Logger.Info($"- the average result of '{numberOfRuns}' executions of the test");
+            Logger.Info("Start running benchmark:");
+            Logger.Info($"Testing the '{trieAlgorithm}' algorithm, with words with '{numberOfCharacters}' characters in '{numberOfRuns}' executions...");
             Logger.Info(string.Empty);
 
-            var wordListCreationResult = this.WordCreator.CreateWordList(numberOfCharacters);
+            var wordListCreationResult = this.WordCreator.CreateWordListParallel(numberOfCharacters);
 
-            // TODO wordlist creation time?
             var creationTimes = new List<PreciseTimeSpan>();
             var searchTimes = new List<PreciseTimeSpan>();
 
@@ -201,8 +198,8 @@
             Console.WriteLine(string.Empty);
             Logger.Info(string.Empty);
             Logger.Info($"Finished benchmark of '{trieAlgorithm}' Trie with '{numberOfCharacters}' characters:");
-            Logger.Info($" Average Trie Creation time: {PreciseTimeSpan.Average(creationTimes),10}");
-            Logger.Info($" Average Trie Search time:   {PreciseTimeSpan.Average(searchTimes),10}");
+            Logger.Info($" - Average Trie Creation time: {PreciseTimeSpan.Average(creationTimes),20}");
+            Logger.Info($" - Average Trie Search time:   {PreciseTimeSpan.Average(searchTimes),20}");
             Logger.Info(string.Empty);
             Logger.Info("-----------------------------------------------------------------------------------------------------------------------");
         }
