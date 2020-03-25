@@ -61,7 +61,7 @@
                     return;
                 }
             }
-            else if (!string.IsNullOrEmpty(resultWord))
+            else
             {
                 this.GetAllWords(resultWord, result);
             }

@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{09143B7B-5145-4444-A38B-1D2919BD1218}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelSearchLibraryTest", "ParallelSearchLibraryTest\ParallelSearchLibraryTest.csproj", "{C0F549F7-85EE-4585-BACF-CA69FB42A1A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +36,16 @@ Global
 		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0708486-66DD-4FFC-AECB-F0216AB95213}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0F549F7-85EE-4585-BACF-CA69FB42A1A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0F549F7-85EE-4585-BACF-CA69FB42A1A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0F549F7-85EE-4585-BACF-CA69FB42A1A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0F549F7-85EE-4585-BACF-CA69FB42A1A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0F549F7-85EE-4585-BACF-CA69FB42A1A4} = {09143B7B-5145-4444-A38B-1D2919BD1218}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D384A7CE-1F37-43F7-9248-AC55FDC9422C}
